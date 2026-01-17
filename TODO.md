@@ -12,7 +12,7 @@ npm install
 # npm install pins versions for npm clean-install, called as part of ups, to use
 bash .biobuddies/includes.bash ups
 bash .biobuddies/includes.bash pcam
-ln --force --symbolic .biobuddies/justfile justfile
+ln -s -f .biobuddies/justfile justfile
 ```
 
 ### 4. Create mkdoc-material Project
@@ -26,7 +26,7 @@ Bootstrap the mkdocs site and install the Material theme:
 mkdocs new .
 ```
 
-You can also create a minimal `mkdocs.yml` immediately (examples below) — during development serve with:
+You can also create a minimal `mkdocs.yaml` immediately (examples below) — during development serve with:
 ```bash
 mkdocs serve
 ```
@@ -39,7 +39,7 @@ Create the site:
 mkdocs new .
 ```
 
-Example `mkdocs.yml` (place in repo root):
+Example `mkdocs.yaml` (place in repo root):
 ```yaml
 site_name: mublog
 site_url: https://cov.ing/tron
@@ -73,6 +73,3 @@ Serving locally:
 ```bash
 mkdocs serve
 ```
-
-
-

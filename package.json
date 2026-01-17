@@ -1,13 +1,13 @@
 {
-  "name": "mublog",
-  "version": "0",
-  "private": true,
-  "devDependencies": {
-    "basedpyright": "*",
-    "prettier": "*",
-    "prettier-plugin-toml": "*",
-    "prettier-plugin-jinja-template": "*",
-    "prettier-plugin-organize-attributes": "*",
-    "wrangler": "*"
-  }
+    "name": "mublog",
+    "version": "0",
+    "private": true,
+    "devDependencies": {
+        "basedpyright": "*",
+        "prettier": "*",
+        "prettier-plugin-toml": "*",
+        "prettier-plugin-jinja-template": "*",
+        "prettier-plugin-organize-attributes": "*",
+        "wrangler": "*"
+    }
 }
