@@ -50,10 +50,10 @@ repos:
           - id: actionlint
           - id: basedpyright
           - id: cookiecutter
-          - id: djlint-jinja
           - id: end-of-file-fixer
           - id: hadolint
           - id: mailmap
+          - id: prettier-write
           - id: ruff-check-fix
           - id: ruff-format
           - id: shellcheck

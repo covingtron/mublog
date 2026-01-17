@@ -4,25 +4,16 @@ Simple Publish on your Own Site, Syndicate Elsewhere (POSSE) favoring Python too
 
 
 
-### 3. Autoformat with pcam
-
-Run `pcam` to autoformat the codebase and run the configured pre-commit hooks:
+### 3. Prepare, install, and run pcam
 
 ```bash
-source .biobuddies/includes.bash && source .venv/bin/activate && pcam
-```
-
-After running `pcam` (which runs the pre-commit hooks), install Python and Node dev dependencies with the included helper wrapper:
-
-```bash
+bash .biobuddies/includes.bash upc
+npm install
+# npm install pins versions for npm clean-install, called as part of ups, to use
 bash .biobuddies/includes.bash ups
+bash .biobuddies/includes.bash pcam
+ln --force --symbolic .biobuddies/justfile justfile
 ```
-
-This `ups` wrapper runs `uv pip install` and an npm clean-install to ensure your environment matches `pyproject.toml` and `package-lock.json`/`package.json`.
-
-
-
-Run `npm install` before the first `bash .biobuddies/includes.bash ups` run.
 
 ### 4. Create mkdoc-material Project
 
