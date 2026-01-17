@@ -2,27 +2,6 @@
 
 Simple Publish on your Own Site, Syndicate Elsewhere (POSSE) favoring Python tools
 
-## Completed Setup Notes
-
-### 1. Bootstrap with Helicopyter Cookiecutter
-
-Create `.cookiecutter.yaml`:
-```yaml
-default_context:
-    languages: Node,Python
-```
-
-Set up tool versions and run cookiecutter template:
-```bash
-asdf plugin add nodejs
-asdf install nodejs latest
-asdf set nodejs latest
-asdf plugin add uv
-asdf install uv latest
-asdf set uv latest
-uvx cookiecutter https://github.com/biobuddies/helicopyter/archive/refs/heads/main.zip --no-input --overwrite-if-exists
-```
-
 ### 2. Configure Pre-commit and Tool Dependencies
 
 A) Populate `.pre-commit-config.yaml` with the best hooks from helicopyter (using basedpyright, not mypy for speed):
@@ -40,7 +19,6 @@ repos:
           - id: djlint-jinja
           - id: end-of-file-fixer
           - id: hadolint
-
           - id: mailmap
           - id: ruff-check-fix
           - id: ruff-format
