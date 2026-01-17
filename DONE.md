@@ -99,4 +99,31 @@ dev = [
 
 [tool.ruff]
 extend = '.biobuddies/ruff.toml'
+
+### 3. Prepare, install, and run pcam
+
+```bash
+bash .biobuddies/includes.bash upc
+npm install
+# npm install pins versions for npm clean-install, called as part of ups, to use
+bash .biobuddies/includes.bash ups
+bash .biobuddies/includes.bash pcam
+ln -s -f .biobuddies/justfile justfile
+```
+
+### 4. Create mkdoc-material Project
+
+Add `mkdocs-material` to your Python dev dependencies (see `pyproject.toml` above) and add `wrangler` to `package.json` devDependencies for any Cloudflare worker needs.
+
+Bootstrap the mkdocs site and install the Material theme:
+
+```bash
+# create the initial site structure
+mkdocs new .
+```
+
+You can also create a minimal `mkdocs.yaml` immediately (examples below) — during development serve with:
+```bash
+mkdocs serve
+```
 ```
