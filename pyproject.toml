@@ -1,0 +1,24 @@
+
+[project]
+name = 'mublog'
+dynamic = ['version']
+
+[project.optional-dependencies]
+dev = [
+    'actionlint-py',
+    'cookiecutter',
+    'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
+    'pre-commit',
+    'pre-commit-hooks',
+    'ruff',
+    'rust-just',
+    'shellcheck-py',
+    'typos',
+    'validate-pyproject',
+    'yamllint',
+    'mkdocs-material',
+]
+
+[tool.ruff]
+extend = '.biobuddies/ruff.toml'
+line-length = 100
