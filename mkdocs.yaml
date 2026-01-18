@@ -1,5 +1,6 @@
 site_name: mublog
 site_url: https://cov.ing/blog
+site_dir: site/blog
 theme:
     name: material
     palette:

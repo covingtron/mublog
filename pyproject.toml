@@ -5,8 +5,12 @@ dynamic = ['version']
 [project.optional-dependencies]
 dev = [
     'actionlint-py',
+    'cdktf',
+    'cdktf-cdktf-provider-cloudflare',
     'cookiecutter',
     'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
+    'helicopyter',
+    'mkdocs-material',
     'pre-commit',
     'pre-commit-hooks',
     'ruff',
@@ -15,8 +19,12 @@ dev = [
     'typos',
     'validate-pyproject',
     'yamllint',
-    'mkdocs-material',
 ]
+
+[tool.basedpyright]
+extends = '.biobuddies/basedpyright.toml'
+venvPath = '.'
+venv = '.venv'
 
 [tool.ruff]
 extend = '.biobuddies/ruff.toml'

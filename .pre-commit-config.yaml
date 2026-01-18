@@ -1,12 +1,13 @@
 repos:
     - repo: https://github.com/biobuddies/helicopyter
-      rev: v2026.00.01
+      rev: v2026.03.02
       hooks:
           - id: actionlint
           - id: basedpyright
           - id: cookiecutter
           - id: end-of-file-fixer
           - id: hadolint
+          - id: helicopyter
           - id: mailmap
           - id: prettier-write
           - id: ruff-check-fix
@@ -14,7 +15,17 @@ repos:
           - id: shellcheck
           - id: trailing-whitespace-fixer
           - id: typos
-          - id: validate-pyproject
           - id: uv-pip-check
           - id: uv-pip-compile
+          - id: validate-pyproject
           - id: yamllint
+    - repo: local
+      hooks:
+          - id: mkdocs
+            always_run: true
+            entry: mkdocs build --strict
+            language: system
+            name: mkdocs
+            pass_filenames: false
+            stages:
+                - manual
