@@ -1,1 +1,13 @@
-site_name: My Docs
+site_name: mublog
+site_url: https://cov.ing/blog
+theme:
+    name: material
+    palette:
+        scheme: slate
+        primary: 'indigo'
+        accent: 'teal'
+    font:
+        text: 'Roboto'
+        code: 'JetBrains Mono'
+plugins:
+    - search
