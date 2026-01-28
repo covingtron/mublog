@@ -1,14 +1,17 @@
 site_name: mublog
-site_url: https://cov.ing/blog
-site_dir: site/blog
+site_url: https://cov.ing/ton
+site_dir: site/ton
 theme:
     name: material
     palette:
         scheme: slate
-        primary: 'indigo'
-        accent: 'teal'
+        primary: indigo
+        accent: teal
     font:
-        text: 'Roboto'
-        code: 'JetBrains Mono'
+        text: Roboto
+        code: JetBrains Mono
 plugins:
+    - blog:
+          blog_dir: blog
+          post_dir: blog/posts
     - search
