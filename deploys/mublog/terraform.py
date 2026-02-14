@@ -1,3 +1,5 @@
+"""Terraform configuration for mublog."""
+
 from os import environ
 from pathlib import Path
 
