@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from . import _Block, definitions
+from . import Block, definitions
 
 
 def _format_str(value: str) -> str:
@@ -50,9 +50,9 @@ def format_value(value: Any, indent: int = 0) -> str:
         return _format_list(value, indent)
     if isinstance(value, dict):
         return _format_dict(value, indent)
-    if isinstance(value, _Block):
+    if isinstance(value, Block):
         pad = '  ' * indent
-        lines = render_block_contents(value._contents, indent + 1)
+        lines = render_block_contents(value.contents, indent + 1)
         return f'{{\n{lines}\n{pad}}}'
     return str(value)
 
@@ -61,17 +61,18 @@ def render_block_contents(kwargs: dict[str, Any], indent: int = 1) -> str:
     pad = '  ' * indent
     lines = []
     for key, value in kwargs.items():
-        if isinstance(value, _Block):
-            block_lines = render_block_contents(value._contents, indent + 1)
-            lines.append(f'{pad}{value._name} {{')
+        if isinstance(value, Block):
+            block_lines = render_block_contents(value.contents, indent + 1)
+            lines.append(f'{pad}{value.name} {{')
             lines.append(block_lines)
             lines.append(f'{pad}}}')
-        elif isinstance(value, list) and value and isinstance(value[0], _Block):
+        elif isinstance(value, list) and value and isinstance(value[0], Block):
             for block_item in value:
-                block_lines = render_block_contents(block_item._contents, indent + 1)
-                lines.append(f'{pad}{block_item._name} {{')
-                lines.append(block_lines)
-                lines.append(f'{pad}}}')
+                if isinstance(block_item, Block):
+                    block_lines = render_block_contents(block_item.contents, indent + 1)
+                    lines.append(f'{pad}{block_item.name} {{')
+                    lines.append(block_lines)
+                    lines.append(f'{pad}}}')
         elif isinstance(value, dict) and '_provisioner' in value:
             prov_type = value['_provisioner']
             prov_args = value['args']

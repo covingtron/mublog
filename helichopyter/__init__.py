@@ -79,11 +79,11 @@ def provisioner(type_: str) -> Callable[..., dict[str, Any]]:
     return inner
 
 
-class _Block:
+class Block:
     def __init__(self, name: str, contents: dict[str, Any]) -> None:
-        self._name = name
-        self._contents = contents
+        self.name: str = name
+        self.contents: dict[str, Any] = contents
 
 
-def block(name: str, **kwargs: Any) -> _Block:
-    return _Block(name, kwargs)
+def block(name: str, **kwargs: Any) -> Block:
+    return Block(name, kwargs)

@@ -25,6 +25,7 @@ dev = [
 extends = '.biobuddies/basedpyright.toml'
 venvPath = '.'
 venv = '.venv'
+reportExplicitAny = false                 # Incremental typing is good.
 
 [tool.ruff]
 extend = '.biobuddies/ruff.toml'
