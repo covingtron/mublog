@@ -3,10 +3,12 @@ defaults:
         shell: bash --noprofile --norc -o errexit -o nounset -o pipefail -o xtrace {0}
 
 env:
-    CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+    AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
+    GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     INSH_TF: tofu
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.asdf/shims:/usr/bin:/bin
 
