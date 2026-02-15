@@ -22,6 +22,4 @@ jobs:
             - run: bash .biobuddies/includes.bash forceready
             - run: just pcam --color always --show-diff-on-failure
             - run: mkdocs build
-            - run: just hti mublog
-            - run: just summarize
-            - run: just hta mublog "$TABR" --auto-approve
+            - run: just deploy
