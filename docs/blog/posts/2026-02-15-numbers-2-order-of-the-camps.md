@@ -49,6 +49,11 @@ date: 2026-02-15
       type: "sunburst",
       startAngle: 67.25,
       sort: null,
+      label: {
+        show: true,
+        rotate: "radial",
+        formatter: (params) => `${params.name}\n${params.value.toLocaleString()}`
+      },
       data: [
         {
           name: "Levi",
