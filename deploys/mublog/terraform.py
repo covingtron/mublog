@@ -3,7 +3,7 @@
 from os import environ
 from pathlib import Path
 
-from helichopyter import backend, provider, provisioner, required_providers, resource, variable
+from helichopyter import backend, provider, required_providers, resource
 
 required_providers(cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.14.0'})
 backend(
@@ -21,24 +21,6 @@ backend(
 )
 
 provider('cloudflare')
-variable('GIHA')(type='string')
-variable('TABR')(type='string')
-
-resource('terraform_data', 'flan')(
-    provisioner('local-exec')(
-        command=(
-            'mkdir -p ../../../site/ton && '
-            "printf 'CONA=mublog\\nENVI=%s\\nGIHA=%s\\nTABR=%s\\n' "
-            '"$TF_WORKSPACE" "$TF_VAR_GIHA" "$TF_VAR_TABR" > ../../../site/ton/flan'
-        ),
-        environment={
-            'TF_WORKSPACE': '${terraform.workspace}',
-            'TF_VAR_GIHA': '${var.GIHA}',
-            'TF_VAR_TABR': '${var.TABR}',
-        },
-    ),
-    triggers_replace=['${terraform.workspace}', '${var.GIHA}', '${var.TABR}'],
-)
 
 resource('cloudflare_workers_script', 'this')(
     account_id=environ['CLOUDFLARE_ACCOUNT_ID'],
@@ -53,6 +35,7 @@ resource('cloudflare_workers_script', 'this')(
 )
 
 resource('cloudflare_dns_record', 'this')(
+    count='${terraform.workspace == "main" ? 1 : 0}',
     content='100::',
     name='${terraform.workspace == "main" ? "@" : terraform.workspace}',
     proxied=True,
@@ -80,6 +63,7 @@ resource('cloudflare_workers_route', 'root')(
 )
 
 resource('cloudflare_ruleset', 'append_slash')(
+    count='${terraform.workspace == "main" ? 1 : 0}',
     kind='zone',
     name='append-slash',
     phase='http_request_dynamic_redirect',

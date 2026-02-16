@@ -13,6 +13,7 @@ preview:
 # Pre-Commit Run (defaults to modified files) with local Python and Node tools on PATH
 pcr *args:
     #!/usr/bin/env bash
+    set -euxo pipefail
     checkout="$HOME/code/$({{ JUST }} cona)"
     [[ -d "$checkout" ]] || {
         echo "ERROR: expected checkout at $checkout"
@@ -38,6 +39,7 @@ pcm *args:
 # Install pre-commit hooks using the project toolchain path
 pc-install:
     #!/usr/bin/env bash
+    set -euxo pipefail
     checkout="$HOME/code/$({{ JUST }} cona)"
     [[ -d "$checkout" ]] || {
         echo "ERROR: expected checkout at $checkout"
@@ -78,6 +80,7 @@ hs cona='all':
 # Helicopyter synth and Terraform Apply
 hta cona envi *args:
     #!/usr/bin/env bash
+    set -euxo pipefail
     if [[ "{{ envi }}" == "default" ]]; then
         echo 'The default workspace behaves inconsistently.'
         echo 'If you only have one environment, please name it `prod`.'
@@ -90,6 +93,7 @@ hta cona envi *args:
 # Helicopyter synth and Terraform Plan
 htp cona envi *args:
     #!/usr/bin/env bash
+    set -euxo pipefail
     if [[ "{{ envi }}" == "default" ]]; then
         echo 'The default workspace behaves inconsistently.'
         echo 'If you only have one environment, please name it `prod`.'
@@ -102,6 +106,7 @@ htp cona envi *args:
 # Deploy mublog: synth, init -upgrade, and apply
 deploy:
     #!/usr/bin/env bash
+    set -euxo pipefail
     : "${TF_WORKSPACE:=`{{ JUST }} tabr`}"
     : "${TF_VAR_GIHA:=`{{ JUST }} giha`}"
     : "${TF_VAR_TABR:=${TF_WORKSPACE}}"
@@ -113,7 +118,11 @@ deploy:
         echo 'If you only have one environment, please name it `prod`.'
         exit 1
     fi
+    mkdir -p site/ton
+    printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
+        "${TF_WORKSPACE}" "${TF_VAR_GIHA}" "${TF_VAR_TABR}" > site/ton/flan
     {{ JUST }} hs mublog \
-        && TF_WORKSPACE="${TF_WORKSPACE}" ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform init -upgrade \
+        && env -u TF_WORKSPACE ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform init -upgrade \
+        && { ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform workspace new "${TF_WORKSPACE}" || true; } \
         && TF_VAR_GIHA="${TF_VAR_GIHA}" TF_VAR_TABR="${TF_VAR_TABR}" TF_WORKSPACE="${TF_WORKSPACE}" \
-            ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform apply -auto-approve
+            ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform apply -parallelism=1 -auto-approve
