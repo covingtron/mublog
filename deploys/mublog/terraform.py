@@ -35,7 +35,6 @@ resource('cloudflare_workers_script', 'this')(
 )
 
 resource('cloudflare_dns_record', 'this')(
-    count='${terraform.workspace == "main" ? 1 : 0}',
     content='100::',
     name='${terraform.workspace == "main" ? "@" : terraform.workspace}',
     proxied=True,

@@ -118,9 +118,10 @@ deploy:
         echo 'If you only have one environment, please name it `prod`.'
         exit 1
     fi
-    mkdir -p site/ton
+    rm -f site/ton/flan
+    mkdir -p site/ton/flan
     printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
-        "${TF_WORKSPACE}" "${TF_VAR_GIHA}" "${TF_VAR_TABR}" > site/ton/flan
+        "${TF_WORKSPACE}" "${TF_VAR_GIHA}" "${TF_VAR_TABR}" > site/ton/flan/index.html
     {{ JUST }} hs mublog \
         && env -u TF_WORKSPACE ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform init -upgrade \
         && { ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform workspace new "${TF_WORKSPACE}" || true; } \
