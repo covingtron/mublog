@@ -36,6 +36,10 @@ def required_providers(**kwargs: Any) -> None:
     definitions.append(('terraform', 'required_providers', kwargs))
 
 
+def backend(name: str, **kwargs: Any) -> None:
+    definitions.append(('terraform', 'backend', name, kwargs))
+
+
 def provider(name: str, **kwargs: Any) -> None:
     definitions.append(('provider', name, kwargs))
 

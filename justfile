@@ -10,6 +10,67 @@ build:
 preview:
     .venv/bin/mkdocs serve
 
+# Pre-Commit Run (defaults to modified files) with local Python and Node tools on PATH
+pcr *args:
+    #!/usr/bin/env bash
+    checkout="$HOME/code/$({{ JUST }} cona)"
+    [[ -d "$checkout" ]] || {
+        echo "ERROR: expected checkout at $checkout"
+        exit 1
+    }
+    export PATH="$checkout/.venv/bin:$checkout/node_modules/.bin:$PATH"
+    pre-commit run {{ args }}
+
+# run Pre-Commit on All files
+pca *args:
+    @# Seemingly contradicting the help text, experimentation shows hook positional arguments must
+    @# come before flags
+    {{ JUST }} pcr {{ args }} --all-files
+
+# run Pre-Commit on All files including Manual stage hooks
+pcam *args:
+    {{ JUST }} pca {{ args }} --hook-stage manual
+
+# run Pre-Commit on modified files including Manual stage hooks
+pcm *args:
+    {{ JUST }} pcr {{ args }} --hook-stage manual
+
+# Install pre-commit hooks using the project toolchain path
+pc-install:
+    #!/usr/bin/env bash
+    checkout="$HOME/code/$({{ JUST }} cona)"
+    [[ -d "$checkout" ]] || {
+        echo "ERROR: expected checkout at $checkout"
+        exit 1
+    }
+    export PATH="$checkout/.venv/bin:$checkout/node_modules/.bin:$PATH"
+    pre-commit install --install-hooks
+    hook=.git/hooks/pre-commit
+    [[ -f "$hook" ]] || {
+        echo "ERROR: expected generated hook at $hook"
+        exit 1
+    }
+    anchor='# end templated'
+    grep -Fq "$anchor" "$hook" || {
+        echo "ERROR: expected anchor not found in $hook: $anchor"
+        exit 1
+    }
+    marker='Added by just pc-install: ensure local toolchain for system hooks'
+    if ! grep -Fq "$marker" "$hook"; then
+        tmp=$(mktemp)
+        awk -v anchor="$anchor" -v marker="$marker" -v checkout="$checkout" '
+            { print }
+            $0 == anchor && !done {
+                print ""
+                print "# " marker
+                print "export PATH=\"" checkout "/.venv/bin:" checkout "/node_modules/.bin:$PATH\""
+                done = 1
+            }
+        ' "$hook" > "$tmp"
+        mv "$tmp" "$hook"
+        chmod +x "$hook"
+    fi
+
 # Helichopyter Synth (uses local helichopyter instead of helicopyter)
 hs cona='all':
     .venv/bin/python -m helichopyter {{ if cona == 'all' { 'all' } else { 'deploys/' + cona + '/terraform.py' } }}
