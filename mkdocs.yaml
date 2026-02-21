@@ -15,3 +15,5 @@ plugins:
           blog_dir: blog
           post_dir: blog/posts
     - search
+watch:
+    - docs/blog

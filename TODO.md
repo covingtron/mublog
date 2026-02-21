@@ -1,2 +1,3 @@
 - plan, do, reflect chain in GitHub Action
 - GitHub repository configuration: variables and secrets
+- text mimetype for flan
