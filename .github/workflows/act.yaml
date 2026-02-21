@@ -7,9 +7,13 @@ env:
     CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+    AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+    TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     INSH_TF: tofu
+    TF_WORKSPACE: ${{ github.ref_name }}
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.asdf/shims:/usr/bin:/bin
 
 on: # yamllint disable-line rule:truthy
@@ -19,6 +23,12 @@ on: # yamllint disable-line rule:truthy
 jobs:
     act:
         runs-on: ubuntu-latest
+        environment:
+            name: ${{ github.ref_name }}
+            url: >-
+                ${{ github.ref_name == 'main'
+                && 'https://cov.ing/ton/'
+                || format('https://{0}.cov.ing/ton/', github.ref_name) }}
         steps:
             - uses: actions/checkout@v4
             - run: bash .biobuddies/includes.bash forceready

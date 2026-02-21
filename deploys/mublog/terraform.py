@@ -3,9 +3,22 @@
 from os import environ
 from pathlib import Path
 
-from helichopyter import provider, required_providers, resource
+from helichopyter import backend, provider, required_providers, resource
 
 required_providers(cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.14.0'})
+backend(
+    's3',
+    bucket='terraform',
+    key='mublog.tfstate',
+    region='auto',
+    workspace_key_prefix='mublog',
+    skip_credentials_validation='true',
+    skip_metadata_api_check='true',
+    skip_region_validation='true',
+    skip_requesting_account_id='true',
+    skip_s3_checksum='true',
+    use_path_style='true',
+)
 
 provider('cloudflare')
 
@@ -49,6 +62,7 @@ resource('cloudflare_workers_route', 'root')(
 )
 
 resource('cloudflare_ruleset', 'append_slash')(
+    count='${terraform.workspace == "main" ? 1 : 0}',
     kind='zone',
     name='append-slash',
     phase='http_request_dynamic_redirect',
