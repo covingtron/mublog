@@ -44,18 +44,21 @@ resource('cloudflare_dns_record', 'this')(
 )
 
 resource('cloudflare_workers_route', 'api')(
+    depends_on=['cloudflare_workers_script.this'],
     pattern='${terraform.workspace == "main" ? "" : "${terraform.workspace}."}cov.ing/api/*',
     script='mublog-${terraform.workspace}',
     zone_id=environ['CLOUDFLARE_ZONE_ID'],
 )
 
 resource('cloudflare_workers_route', 'ton')(
+    depends_on=['cloudflare_workers_script.this'],
     pattern='${terraform.workspace == "main" ? "" : "${terraform.workspace}."}cov.ing/ton/*',
     script='mublog-${terraform.workspace}',
     zone_id=environ['CLOUDFLARE_ZONE_ID'],
 )
 
 resource('cloudflare_workers_route', 'root')(
+    depends_on=['cloudflare_workers_script.this'],
     pattern='${terraform.workspace == "main" ? "" : "${terraform.workspace}."}cov.ing/',
     script='mublog-${terraform.workspace}',
     zone_id=environ['CLOUDFLARE_ZONE_ID'],
