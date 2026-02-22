@@ -126,4 +126,4 @@ deploy:
         && env -u TF_WORKSPACE ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform init -upgrade \
         && { ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform workspace new "${TF_WORKSPACE}" || true; } \
         && TF_VAR_GIHA="${TF_VAR_GIHA}" TF_VAR_TABR="${TF_VAR_TABR}" TF_WORKSPACE="${TF_WORKSPACE}" \
-            ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform apply -parallelism=1 -auto-approve
+            ${INSH_TF:-terraform} -chdir=deploys/mublog/terraform apply -auto-approve
