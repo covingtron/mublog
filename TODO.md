@@ -1,3 +1,4 @@
 - plan, do, reflect chain in GitHub Action
 - GitHub repository configuration: variables and secrets
 - text mimetype for flan
+- combine Gunicorn and Django logs into one wide key=value stream
