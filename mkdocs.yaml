@@ -15,5 +15,9 @@ plugins:
           blog_dir: blog
           post_dir: blog/posts
     - search
+extra_css:
+    - assets/trihard.css
+extra_javascript:
+    - assets/trihard.js
 watch:
     - docs/blog

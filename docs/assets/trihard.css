@@ -1,0 +1,76 @@
+#trihard-app {
+    --trihard-background: #ffffff;
+    --trihard-foreground: #800000;
+    --trihard-accent: #ffa500;
+    margin: 2rem 0;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+}
+
+.trihard-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    background: #f9f9f9;
+}
+
+.trihard-controls label {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+#trihard-grid {
+    display: grid;
+    gap: 1px;
+    overflow: auto;
+    max-height: 70vh;
+    border: 1px solid #ddd;
+    background: #ddd;
+}
+
+.trihard-square {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+}
+
+.trihard-triangle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.trihard-west {
+    clip-path: polygon(0 0, 50% 50%, 0 100%);
+}
+
+.trihard-north {
+    clip-path: polygon(0 0, 100% 0, 50% 50%);
+}
+
+.trihard-south {
+    clip-path: polygon(100% 100%, 0 100%, 50% 50%);
+}
+
+.trihard-east {
+    clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+}
+
+.trihard-background {
+    background: var(--trihard-background);
+}
+
+.trihard-foreground {
+    background: var(--trihard-foreground);
+}
+
+.trihard-accent {
+    background: var(--trihard-accent);
+}
