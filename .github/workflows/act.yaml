@@ -31,6 +31,11 @@ jobs:
                 || format('https://{0}.cov.ing/ton/', github.ref_name) }}
         steps:
             - uses: actions/checkout@v4
+            - uses: jdx/mise-action@v3
+              with:
+                  github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+            - run: tenv update-path
+            - run: tenv opentofu install
             - run: bash .biobuddies/includes.bash forceready
             - run: just pcam --color always --show-diff-on-failure
             - run: mkdocs build
