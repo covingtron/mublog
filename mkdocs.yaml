@@ -18,9 +18,5 @@ plugins:
 markdown_extensions:
     - pymdownx.highlight
     - pymdownx.superfences
-extra_css:
-    - assets/trihard.css
-extra_javascript:
-    - assets/trihard.js
 watch:
     - docs/blog
