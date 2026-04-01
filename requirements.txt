@@ -60,6 +60,8 @@ filelock==3.20.3
     # via virtualenv
 ghp-import==2.1.0
     # via mkdocs
+greenlet==3.3.2
+    # via playwright
 hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git@446db46ab58b26eb8e40d5626c1229e8cf75b3b5
     # via mublog (pyproject.toml)
 helicopyter==2025.28.1
@@ -123,6 +125,8 @@ platformdirs==4.5.1
     # via
     #   mkdocs-get-deps
     #   virtualenv
+playwright==1.58.0
+    # via mublog (pyproject.toml)
 pre-commit==4.5.1
     # via mublog (pyproject.toml)
 pre-commit-hooks==6.0.0
@@ -135,6 +139,8 @@ publication==0.0.3
     #   cdktf-cdktf-provider-null
     #   constructs
     #   jsii
+pyee==13.0.1
+    # via playwright
 pygments==2.19.2
     # via
     #   mkdocs-material
@@ -191,6 +197,7 @@ typing-extensions==4.15.0
     # via
     #   cattrs
     #   jsii
+    #   pyee
     #   typing-inspect
 typing-inspect==0.9.0
     # via typed-argument-parser

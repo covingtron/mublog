@@ -1,5 +1,6 @@
 ---
 date: 2026-02-16
+slug: numbers-3-camp-positions
 ---
 
 # Numbers 3

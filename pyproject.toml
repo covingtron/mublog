@@ -11,6 +11,7 @@ dev = [
     'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
     'helicopyter',
     'mkdocs-material',
+    'playwright',
     'pre-commit',
     'pre-commit-hooks',
     'ruff',
