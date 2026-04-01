@@ -23,7 +23,7 @@ fingers land.
 
 Open C major: `x32010`
 
-<div style="font-family: monospace; line-height: 1.275; white-space: pre">
+<pre style="font-family: monospace; line-height: 1.275">
   E   A   D   G   B   e
   ✕           ◯       ◯
   ┌───┬───┬───┬───┬───┐
@@ -35,13 +35,13 @@ Open C major: `x32010`
   ├───┼───┼───┼───┼───┤
 3 │   ●   │   │   │   │
   └───┴───┴───┴───┴───┘
-</div>
+</pre>
 
-This needed an inline `div` with `white-space: pre` and a tuned `line-height` to reduce the
+This needed a `pre` tag with a tuned `line-height` to reduce the
 vertical gaps, though there are probably better ways to do it.
 
 ```html
-<div style="font-family: monospace; line-height: 1.275; white-space: pre">
+<pre style="font-family: monospace; line-height: 1.275">
   E   A   D   G   B   e
   ✕           ◯       ◯
   ┌───┬───┬───┬───┬───┐
@@ -53,7 +53,7 @@ vertical gaps, though there are probably better ways to do it.
   ├───┼───┼───┼───┼───┤
 3 │   ●   │   │   │   │
   └───┴───┴───┴───┴───┘
-</div>
+</pre>
 ```
 
 This approach can probably also be applied to musical staves.
