@@ -1,5 +1,6 @@
 ---
 date: 2026-02-01
+slug: he-must-increase
 ---
 
 # He Must Increase

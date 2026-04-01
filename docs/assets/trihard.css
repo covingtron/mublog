@@ -16,6 +16,7 @@
     padding: 1rem;
     border-radius: 0.25rem;
     background: #f9f9f9;
+    color: #111;
 }
 
 .trihard-controls label {
@@ -33,7 +34,7 @@
     background: #ddd;
 }
 
-.trihard-square {
+.trihard-position {
     position: relative;
     width: 40px;
     height: 40px;

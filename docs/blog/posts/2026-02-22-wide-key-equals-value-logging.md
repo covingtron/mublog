@@ -1,5 +1,6 @@
 ---
 date: 2026-02-22
+slug: wini-wide-key-equals-value-logging
 ---
 
 # Wide Key `=` Equals Value Logging

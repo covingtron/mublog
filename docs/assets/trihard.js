@@ -10,12 +10,7 @@
     const background_color_input = document.getElementById('trihard-background')
     const foreground_color_input = document.getElementById('trihard-foreground')
     const accent_color_input = document.getElementById('trihard-accent')
-    const triangle_classes = [
-        'trihard-west',
-        'trihard-north',
-        'trihard-south',
-        'trihard-east',
-    ]
+    const quadrant_classes = ['trihard-west', 'trihard-north', 'trihard-south', 'trihard-east']
     const triangle_states = ['background', 'foreground', 'accent']
 
     let grid_data = {}
@@ -43,24 +38,24 @@
                 grid_data[position] ??= Array(4).fill('background')
 
                 const square = document.createElement('div')
-                square.className = 'trihard-square'
+                square.className = 'trihard-position'
                 square.title = position
 
-                triangle_classes.forEach((direction, direction_index) => {
+                quadrant_classes.forEach((quadrant, quadrant_index) => {
                     const triangle = document.createElement('div')
-                    const current_state = () => grid_data[position][direction_index]
+                    const current_state = () => grid_data[position][quadrant_index]
 
-                    triangle.className = `trihard-triangle ${direction} trihard-${current_state()}`
+                    triangle.className = `trihard-triangle ${quadrant} trihard-${current_state()}`
                     triangle.onclick = (event) => {
                         event.stopPropagation()
                         const state_index =
                             (triangle_states.indexOf(current_state()) + 1) % triangle_states.length
                         const next_state = triangle_states[state_index]
 
-                        grid_data[position][direction_index] = next_state
-                        triangle.className = `trihard-triangle ${direction} trihard-${next_state}`
+                        grid_data[position][quadrant_index] = next_state
+                        triangle.className = `trihard-triangle ${quadrant} trihard-${next_state}`
                         console.log(
-                            `Updated ${position} direction ${direction} to ${next_state}. ` +
+                            `Updated ${position} quadrant ${quadrant} to ${next_state}. ` +
                                 `Square state: ${grid_data[position].join(',')}`,
                         )
                     }

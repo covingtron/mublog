@@ -1,5 +1,6 @@
 ---
 date: 2026-02-15
+slug: numbers-2-order-of-the-camps
 ---
 
 # Numbers 2
