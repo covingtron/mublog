@@ -1,0 +1,96 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>C chord repro</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Music&display=swap');
+
+    body {
+        margin: 0;
+        padding: 1rem;
+        font: 16px/1 monospace;
+    }
+
+    .chord-box {
+        --glyph-scale: 3.4rem;
+        --column-origin: calc(var(--glyph-scale) * 137 / 2000);
+        --gap: calc(var(--glyph-scale) * 172 / 1000);
+        --row-origin: calc(0.16rem + var(--glyph-scale) * 503 / 2000);
+        display: inline-block;
+        height: 4.25rem;
+        margin: 0;
+        position: relative;
+        width: 3.2rem;
+    }
+
+    .chord-box::before {
+        color: currentColor;
+        content: '\1D11C';
+        font:
+            var(--glyph-scale)/1 'Noto Music',
+            sans-serif;
+        left: 0;
+        opacity: 0.4;
+        pointer-events: none;
+        position: absolute;
+        top: 0.1rem;
+        z-index: 0;
+    }
+
+    .chord-box::after {
+        content: attr(data-chord);
+        left: 50%;
+        position: absolute;
+        top: 3.75rem;
+        transform: translate(-50%, 0);
+        z-index: 1;
+    }
+
+    .chord-box > span {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+
+    .chord-box > [data-pos^='E'] {
+        left: var(--column-origin);
+    }
+    .chord-box > [data-pos^='A'] {
+        left: calc(var(--column-origin) + var(--gap));
+    }
+    .chord-box > [data-pos^='D'] {
+        left: calc(var(--column-origin) + var(--gap) * 2);
+    }
+    .chord-box > [data-pos^='G'] {
+        left: calc(var(--column-origin) + var(--gap) * 3);
+    }
+    .chord-box > [data-pos^='B'] {
+        left: calc(var(--column-origin) + var(--gap) * 4);
+    }
+    .chord-box > [data-pos^='e'] {
+        left: calc(var(--column-origin) + var(--gap) * 5);
+    }
+    .chord-box > [data-pos$='0'] {
+        top: 0.46rem;
+    }
+    .chord-box > [data-pos$='1'] {
+        top: var(--row-origin);
+    }
+    .chord-box > [data-pos$='2'] {
+        top: calc(var(--row-origin) + var(--gap));
+    }
+    .chord-box > [data-pos$='3'] {
+        top: calc(var(--row-origin) + var(--gap) * 2);
+    }
+    .chord-box > [data-pos$='4'] {
+        top: calc(var(--row-origin) + var(--gap) * 3);
+    }
+</style>
+
+<span class="chord-box" aria-label="C chord diagram" data-chord="C">
+    <span data-pos="E0">✕</span>
+    <span data-pos="A3">●</span>
+    <span data-pos="D2">●</span>
+    <span data-pos="G0">◯</span>
+    <span data-pos="B1">●</span>
+    <span data-pos="e0">◯</span>
+</span>
