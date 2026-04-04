@@ -14,9 +14,12 @@ plugins:
     - blog:
           blog_dir: blog
           post_dir: blog/posts
+    - macros
     - search
 markdown_extensions:
-    - pymdownx.highlight
+    - pymdownx.highlight:
+          anchor_linenums: true
+          linenums: true
     - pymdownx.superfences
 watch:
     - docs/blog

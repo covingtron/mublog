@@ -11,6 +11,7 @@ dev = [
     'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
     'helicopyter',
     'mkdocs-material',
+    'mkdocs-macros-plugin',
     'playwright',
     'pre-commit',
     'pre-commit-hooks',
@@ -24,8 +25,10 @@ dev = [
 
 [tool.basedpyright]
 extends = '.biobuddies/basedpyright.toml'
+pythonVersion = '3.13'
 reportAny = false
 reportExplicitAny = false                 # Incremental typing is good.
+reportImplicitStringConcatenation = false
 reportUnknownArgumentType = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false
