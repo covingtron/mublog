@@ -3,6 +3,7 @@ site_url: https://cov.ing/ton
 site_dir: site/ton
 theme:
     name: material
+    favicon: /favicon.svg
     palette:
         scheme: slate
         primary: indigo
