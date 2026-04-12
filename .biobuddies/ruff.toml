@@ -51,6 +51,7 @@ split-on-trailing-comma = false
     'PLR6301', # Test classes can ignore self
     'PT013',   # `import pytest` would be inconsistent with other imports
     'S101',    # Tests can have assertions
+    'S603',    # Tests can call subprocesses
 ]
 
 [lint.pydocstyle]
