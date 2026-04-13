@@ -39,9 +39,12 @@ charset-normalizer==3.4.4
 click==8.3.1
     # via
     #   cookiecutter
+    #   djlint
     #   mkdocs
 colorama==0.4.6
-    # via mkdocs-material
+    # via
+    #   djlint
+    #   mkdocs-material
 constructs==10.4.5
     # via
     #   cdk8s
@@ -50,10 +53,22 @@ constructs==10.4.5
     #   cdktf-cdktf-provider-null
 cookiecutter==2.6.0
     # via mublog (pyproject.toml)
+coverage==7.13.5
+    # via pytest-cov
+cssbeautifier==1.15.4
+    # via djlint
 distlib==0.4.0
     # via virtualenv
+django-upgrade==1.30.0
+    # via mublog (pyproject.toml)
+djlint==1.36.4
+    # via mublog (pyproject.toml)
 docstring-parser==0.17.0
     # via typed-argument-parser
+editorconfig==0.17.1
+    # via
+    #   cssbeautifier
+    #   jsbeautifier
 fastjsonschema==2.21.2
     # via validate-pyproject
 filelock==3.20.3
@@ -76,12 +91,18 @@ idna==3.11
     # via requests
 importlib-resources==6.5.2
     # via jsii
+iniconfig==2.3.0
+    # via pytest
 jinja2==3.1.6
     # via
     #   cookiecutter
     #   mkdocs
     #   mkdocs-macros-plugin
     #   mkdocs-material
+jsbeautifier==1.15.4
+    # via
+    #   cssbeautifier
+    #   djlint
 jsii==1.125.0
     # via
     #   cdk8s
@@ -89,6 +110,8 @@ jsii==1.125.0
     #   cdktf-cdktf-provider-cloudflare
     #   cdktf-cdktf-provider-null
     #   constructs
+json5==0.14.0
+    # via djlint
 markdown==3.10
     # via
     #   mkdocs
@@ -126,10 +149,13 @@ packaging==25.0
     # via
     #   mkdocs
     #   mkdocs-macros-plugin
+    #   pytest
+    #   validate-pyproject
 paginate==0.5.7
     # via mkdocs-material
 pathspec==1.0.3
     # via
+    #   djlint
     #   mkdocs
     #   mkdocs-macros-plugin
     #   yamllint
@@ -139,6 +165,10 @@ platformdirs==4.5.1
     #   virtualenv
 playwright==1.58.0
     # via mublog (pyproject.toml)
+pluggy==1.6.0
+    # via
+    #   pytest
+    #   pytest-cov
 pre-commit==4.5.1
     # via mublog (pyproject.toml)
 pre-commit-hooks==6.0.0
@@ -156,9 +186,18 @@ pyee==13.0.1
 pygments==2.19.2
     # via
     #   mkdocs-material
+    #   pytest
     #   rich
 pymdown-extensions==10.20
     # via mkdocs-material
+pyrefly==0.60.2
+    # via mublog (pyproject.toml)
+pytest==9.0.3
+    # via
+    #   mublog (pyproject.toml)
+    #   pytest-cov
+pytest-cov==7.1.0
+    # via mublog (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
     #   arrow
@@ -170,6 +209,7 @@ python-slugify==8.0.4
 pyyaml==6.0.3
     # via
     #   cookiecutter
+    #   djlint
     #   mkdocs
     #   mkdocs-get-deps
     #   mkdocs-macros-plugin
@@ -179,6 +219,8 @@ pyyaml==6.0.3
     #   yamllint
 pyyaml-env-tag==1.1
     # via mkdocs
+regex==2026.4.4
+    # via djlint
 requests==2.32.5
     # via
     #   cookiecutter
@@ -190,18 +232,27 @@ ruamel-yaml==0.19.1
     # via pre-commit-hooks
 ruff==0.14.13
     # via mublog (pyproject.toml)
-rust-just==1.46.0
-    # via mublog (pyproject.toml)
 shellcheck-py==0.11.0.1
     # via mublog (pyproject.toml)
+shfmt-py==3.12.0.2
+    # via mublog (pyproject.toml)
 six==1.17.0
-    # via python-dateutil
+    # via
+    #   cssbeautifier
+    #   jsbeautifier
+    #   python-dateutil
 super-collections==0.6.2
     # via mkdocs-macros-plugin
 termcolor==3.3.0
     # via mkdocs-macros-plugin
 text-unidecode==1.3
     # via python-slugify
+tokenize-rt==6.2.0
+    # via django-upgrade
+tqdm==4.67.3
+    # via djlint
+trove-classifiers==2026.1.14.14
+    # via validate-pyproject
 typed-argument-parser==1.11.0
     # via helicopyter
 typeguard==2.13.3
