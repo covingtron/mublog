@@ -1,0 +1,45 @@
+[tasks.build]
+run = 'mkdocs build "$@"'
+
+[tasks.cookiecutter]
+run = 'echo skipped until github actions template includes secrets, build, and deploy'
+
+[tasks.preview]
+run = 'mkdocs serve "$@"'
+
+[tasks.tinit]
+run = """
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+cona=${1:?missing cona}
+shift
+tf=${INSH_TF:-terraform}
+"$tf" -chdir="deploys/$cona/terraform" init "$@"
+"""
+
+[tasks.deploy]
+run = """
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+: "${TF_WORKSPACE:=$(mise tabr)}"
+: "${TF_VAR_giha:=$(mise giha)}"
+: "${TF_VAR_tabr:=${TF_WORKSPACE}}"
+: "${TF_WORKSPACE:?TF_WORKSPACE must be set and non-empty}"
+: "${TF_VAR_giha:?TF_VAR_giha must be set and non-empty}"
+: "${TF_VAR_tabr:?TF_VAR_tabr must be set and non-empty}"
+if [[ "$TF_WORKSPACE" == "default" ]]; then
+    echo 'The default workspace behaves inconsistently.'
+    echo 'If you only have one environment, please name it `prod`.'
+    exit 1
+fi
+rm -f site/ton/flan
+mkdir -p site/ton/flan
+printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
+    "$TF_WORKSPACE" "$TF_VAR_giha" "$TF_VAR_tabr" > site/ton/flan/index.html
+python -m helichopyter deploys/mublog/terraform.py
+tf=${INSH_TF:-terraform}
+env -u TF_WORKSPACE "$tf" -chdir=deploys/mublog/terraform init
+env -u TF_WORKSPACE "$tf" -chdir=deploys/mublog/terraform workspace new "$TF_WORKSPACE" || true
+TF_VAR_giha="$TF_VAR_giha" TF_VAR_tabr="$TF_VAR_tabr" \
+    mise tapply mublog "$TF_WORKSPACE" -auto-approve
+"""

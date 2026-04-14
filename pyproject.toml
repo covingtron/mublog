@@ -8,6 +8,8 @@ dev = [
     'cdktf',
     'cdktf-cdktf-provider-cloudflare',
     'cookiecutter',
+    'django-upgrade',
+    'djlint',
     'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
     'helicopyter',
     'mkdocs-material',
@@ -15,25 +17,19 @@ dev = [
     'playwright',
     'pre-commit',
     'pre-commit-hooks',
+    'pyrefly',
+    'pytest',
+    'pytest-cov',
     'ruff',
-    'rust-just',
     'shellcheck-py',
+    'shfmt-py',
     'typos',
-    'validate-pyproject',
+    'validate-pyproject[all]',
     'yamllint',
 ]
 
-[tool.basedpyright]
-extends = '.biobuddies/basedpyright.toml'
-pythonVersion = '3.13'
-reportAny = false
-reportExplicitAny = false                 # Incremental typing is good.
-reportImplicitStringConcatenation = false
-reportUnknownArgumentType = false
-reportUnknownMemberType = false
-reportUnknownVariableType = false
-venv = '.venv'
-venvPath = '.'
+[tool.pyrefly]
+python-version = '3.13'
 
 [tool.ruff]
 extend = '.biobuddies/ruff.toml'

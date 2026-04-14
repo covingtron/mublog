@@ -59,7 +59,7 @@ resource('cloudflare_workers_route', 'ton')(
 
 resource('cloudflare_workers_route', 'root')(
     depends_on=['cloudflare_workers_script.this'],
-    pattern='${terraform.workspace == "main" ? "" : "${terraform.workspace}."}cov.ing/',
+    pattern='${terraform.workspace == "main" ? "" : "${terraform.workspace}."}cov.ing/*',
     script='mublog-${terraform.workspace}',
     zone_id=environ['CLOUDFLARE_ZONE_ID'],
 )

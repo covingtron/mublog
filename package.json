@@ -3,7 +3,6 @@
     "version": "0",
     "private": true,
     "devDependencies": {
-        "basedpyright": "*",
         "prettier": "*",
         "prettier-plugin-toml": "*",
         "prettier-plugin-jinja-template": "*",

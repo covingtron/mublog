@@ -1,25 +1,20 @@
+name: act
 defaults:
     run:
         shell: bash --noprofile --norc -o errexit -o nounset -o pipefail -o xtrace {0}
-
 env:
+    AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+    AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
     CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
-    AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-    TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     INSH_TF: tofu
+    TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     TF_WORKSPACE: ${{ github.ref_name }}
-    PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.asdf/shims:/usr/bin:/bin
-
-on: # yamllint disable-line rule:truthy
-    push:
-    workflow_dispatch:
-
+    PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
 jobs:
     act:
         runs-on: ubuntu-latest
@@ -30,13 +25,29 @@ jobs:
                 && 'https://cov.ing/ton/'
                 || format('https://{0}.cov.ing/ton/', github.ref_name) }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
             - uses: jdx/mise-action@v3
               with:
-                  github_token: ${{ secrets.MY_GITHUB_TOKEN }}
-            - run: tenv update-path
-            - run: tenv opentofu install
-            - run: bash .biobuddies/includes.bash forceready
-            - run: just pcam --color always --show-diff-on-failure
-            - run: mkdocs build
-            - run: just deploy
+                  experimental: true
+            - run: mise set-environment
+            - run: mise pre-commit-all
+            - run: mise build
+            - run: mise deploy
+    tabularize:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
+            - uses: jdx/mise-action@v3
+              with:
+                  experimental: true
+            - run: mise tabularize
+
+on: # yamllint disable-line rule:truthy
+    push:
+    workflow_dispatch:
