@@ -127,11 +127,11 @@ Try `↓  ↓↑  ↑↓↑` all the way through, or just keep a steady down-str
     <h2 id="coming-round">She'll Be Coming 'Round the Mountain</h2>
 
     <div class="verse" aria-label="Chorus">
-      {{ lead_line(She_27_ll_Be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
-      {{ lead_line(She_27_ll_Be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
-      {{ lead_line(She_27_ll_Be_com='G', ing_27_round_the='G', moun_2d='C', tain='G') }}
-      {{ lead_line(She_27_ll_Be_com='G', ing_27_round_the='G', moun_2d='C', tain='G') }}
-      {{ lead_line(She_27_ll_Be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
+      {{ lead_line(She_27_ll_be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
+      {{ lead_line(She_27_ll_be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
+      {{ lead_line(She_27_ll_be_com='G', ing_27_round_the='G', moun_2d='C', tain='G') }}
+      {{ lead_line(She_27_ll_be_com='G', ing_27_round_the='G', moun_2d='C', tain='G') }}
+      {{ lead_line(She_27_ll_be_com='G', ing_27_round_the='G', moun_2d='C', tain='G', when_she='D7', comes='G') }}
     </div>
   </section>
 </div>
