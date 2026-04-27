@@ -7,8 +7,6 @@ slug: crepe-recipe
 
 ![Crepes](https://covicovey.us/wp-content/uploads/2023/02/crepe.jpg)
 
-Add all ingredients to a blender and blend until smooth.
-
 ## Ingredients
 
 - 2 cups milk
