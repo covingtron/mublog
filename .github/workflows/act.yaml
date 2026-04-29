@@ -32,6 +32,7 @@ jobs:
             - uses: jdx/mise-action@v3
               with:
                   experimental: true
+            - run: "! [[ -f .tofu-version ]] || tenv opentofu install"
             - run: mise set-environment
             - run: mise pre-commit-all
             - run: mise build
