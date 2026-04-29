@@ -7,11 +7,11 @@ slug: crepe-recipe
 
 ## Ingredients
 
-- 500 mL (2 cups) milk
-- 15–20 mL (1 tbsp–4 tsp) peanut oil or butter (butter for nut-free)
+- 500 milliliters (2 cups) milk
+- 15 to 20 milliliters (1 tablespoon to 4 teaspoons) peanut oil (or butter for nut free)
 - 6 eggs
-- 500 mL (2 cups) flour
-- pinch of salt (1.25 mL / ¼ tsp), optional
+- 500 milliliters (2 cups) flour
+- pinch of salt (1.25 milliliters or 0.25 teaspoon), optional
 
 ## Directions
 
