@@ -66,7 +66,7 @@ command_args=$*
 set -- $(
     git ls-files -- "${glob[@]}" \
         | grep --invert-match --extended-regexp --file <(
-            sed -nE '/^#|^$/!p' .config/autoformat-excludes
+            sed -nE '/^#|^$/!p' .biobuddies/autoformat-excludes
         ) || [[ $? -eq 1 ]]
 )
 [[ $# -eq 0 ]] && exit 0
@@ -268,7 +268,7 @@ ${INSH_TF:-terraform} -chdir="deploys/$cona/terraform" validate "$@"
 run = 'npm install --package-lock-only "$@"'
 
 [tasks.typos]
-run = 'typos --write-changes --config .config/typos.toml "$@"'
+run = 'typos --write-changes --config .biobuddies/typos.toml "$@"'
 
 [tasks.uv-pip-check]
 run = 'uv pip check "$@"'
