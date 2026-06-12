@@ -13,7 +13,6 @@ env:
     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     INSH_TF: tofu
     TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-    TF_WORKSPACE: ${{ github.ref_name }}
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
 jobs:
     act:
