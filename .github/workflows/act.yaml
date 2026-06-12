@@ -31,7 +31,7 @@ jobs:
             - uses: jdx/mise-action@v3
               with:
                   experimental: true
-            - run: 'env -u GITHUB_TOKEN -u TENV_GITHUB_TOKEN tenv tofu install "$(< .tofu-version)"'
+            - run: 'env -u GITHUB_TOKEN -u TENV_GITHUB_TOKEN tenv tofu install'
             - run: mise set-environment
             - run: mise pre-commit-all
             - run: mise build
