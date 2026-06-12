@@ -309,6 +309,9 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
+/site/*
+!/site/favicon.svg
+!/site/robots.txt
 /site/ton/
 
 # mypy
