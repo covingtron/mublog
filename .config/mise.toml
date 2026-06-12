@@ -332,7 +332,7 @@ depends = [
 run = 'git diff --color=always --exit-code && echo "No changes"'
 
 [tools]
-'aqua:tofuutils/tenv' = '4.9.3'
+'aqua:tofuutils/tenv' = '4.14.8'
 gh = 'latest'
 node = '22'
 python = '3.12'
