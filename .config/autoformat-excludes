@@ -1,6 +1,4 @@
 # Cookiecutter outputs
-^\.biobuddies$
-^\.biobuddies/
 ^\.editorconfig$
 ^\.github/copilot-instructions\.md$
 ^\.github/pull_request_template\.md$

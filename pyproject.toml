@@ -32,5 +32,5 @@ dev = [
 python-version = '3.13'
 
 [tool.ruff]
-extend = '.biobuddies/ruff.toml'
+extend = '.config/ruff.toml'
 line-length = 100
