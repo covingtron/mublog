@@ -35,6 +35,7 @@ jobs:
             - run: |
                   ! [[ -f .tofu-version ]] || {
                       version=$(< .tofu-version)
+                      mkdir -p /home/runner/.local/bin
                       curl -fsSL \
                           "https://github.com/opentofu/opentofu/releases/download/v${version}/tofu_${version}_linux_amd64.tar.gz" \
                           | tar -xz -C /home/runner/.local/bin tofu
