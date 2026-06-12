@@ -32,7 +32,15 @@ jobs:
             - uses: jdx/mise-action@v3
               with:
                   experimental: true
-            - run: "! [[ -f .tofu-version ]] || tenv opentofu install \"$(< .tofu-version)\""
+            - run: |
+                  ! [[ -f .tofu-version ]] || {
+                      version=$(< .tofu-version)
+                      curl -fsSL \
+                          "https://github.com/opentofu/opentofu/releases/download/v${version}/tofu_${version}_linux_amd64.tar.gz" \
+                          | tar -xz -C /home/runner/.local/bin tofu
+                      chmod +x /home/runner/.local/bin/tofu
+                      tofu version
+                  }
             - run: mise set-environment
             - run: mise pre-commit-all
             - run: mise build
