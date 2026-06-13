@@ -1,9 +1,9 @@
 ---
 date: 2026-04-29
-slug: globalized-datetimes
+slug: globalized-datetimez
 ---
 
-# Globalize Dates and Times in Django
+# Globalized Date Times with a Z
 
 ## From Flatter-Than-a-Pancake Kansas
 
