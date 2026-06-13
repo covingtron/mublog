@@ -18,11 +18,11 @@ jobs:
     act:
         runs-on: ubuntu-latest
         environment:
-            name: ${{ github.ref_name == 'main' && 'main' || format('pre{0}', github.event.pull_request.number) }}
+            name: ${{ github.ref_name }}
             url: >-
                 ${{ github.ref_name == 'main'
                 && 'https://cov.ing/ton/'
-                || format('https://pre{0}.cov.ing/ton/', github.event.pull_request.number) }}
+                || format('https://{0}.cov.ing/ton/', replace(github.ref_name, '/', '-')) }}  # dup mise.toml:24
         steps:
             - uses: actions/checkout@v6
               with:
@@ -36,8 +36,6 @@ jobs:
             - run: mise pre-commit-all
             - run: mise build
             - run: mise deploy
-              env:
-                  TF_WORKSPACE: ${{ github.ref_name == 'main' && 'main' || format('pre{0}', github.event.pull_request.number) }}
     tabularize:
         runs-on: ubuntu-latest
         steps:
