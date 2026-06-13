@@ -21,7 +21,7 @@ tf=${INSH_TF:-terraform}
 run = """
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
-: "${TF_WORKSPACE:=$(mise tabr | tr '/' '-')}"
+: "${TF_WORKSPACE:=$(mise tabr)}"
 : "${TF_VAR_giha:=$(mise giha)}"
 : "${TF_VAR_tabr:=${TF_WORKSPACE}}"
 : "${TF_WORKSPACE:?TF_WORKSPACE must be set and non-empty}"

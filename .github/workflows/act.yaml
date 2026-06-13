@@ -24,6 +24,14 @@ jobs:
                 && 'https://cov.ing/ton/'
                 || format('https://{0}.cov.ing/ton/', github.ref_name) }}
         steps:
+            - run: |
+                  if [[ "${GITHUB_REF_NAME}" == */* ]]; then
+                      printf 'Branch name "%s" contains a slash.\n' "${GITHUB_REF_NAME}"
+                      printf 'Supporting slashes in preview deployment configuration\n'
+                      printf 'is more effort than it is worth.\n'
+                      printf 'Use dashes instead (e.g., feature-my-thing).\n'
+                      exit 1
+                  fi
             - uses: actions/checkout@v6
               with:
                   fetch-depth: 0
