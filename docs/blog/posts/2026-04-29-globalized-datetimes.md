@@ -70,13 +70,13 @@ Display datetimes like `2026-04-29 14:30 Z` everywhere:
 
 ## Django 3.x and 4.x
 
-Set `USE_L10N = False`. Django then uses the format strings from `settings.py` directly,
+Set `USE_L10N = False`. Django then uses the format strings from `config/settings.py` directly,
 without consulting locale modules. `USE_L10N` is
 [deprecated](https://docs.djangoproject.com/en/6.0/releases/4.0/#localization) in 4.x
 but still works.
 
 ```python
-# settings.py
+# config/settings.py
 USE_I18N = False
 USE_L10N = False
 USE_TZ = True
@@ -98,10 +98,10 @@ Django resolves format strings by checking modules in `FORMAT_MODULE_PATH` befor
 back to the built-in `django.conf.locale.en.formats`. We register our own module to override
 the defaults.
 
-Create a format module at `config/formats/c/formats.py`:
+Create a format module at `config/formats/z/formats.py`:
 
 ```python
-# config/formats/c/formats.py
+# config/formats/z/formats.py
 DATETIME_FORMAT = r'Y-m-d H:i \Z'
 SHORT_DATETIME_FORMAT = r'Y-m-d H:i \Z'
 DATE_FORMAT = r'Y-m-d \Z'
@@ -112,23 +112,15 @@ TIME_FORMAT = r'H:i \Z'
 Format modules use Django's own template-tag format syntax, not Python `strftime`.
 The equivalent of `%Y-%m-%d %H:%M Z` is `Y-m-d H:i \Z` (backslash-escaped `Z` literal).
 
-Point Django at the module and add settings-level fallback strings:
+Point Django at the module:
 
 ```python
-# settings.py
+# config/settings.py
 USE_I18N = False
 USE_TZ = True
 TIME_ZONE = 'UTC'
 FORMAT_MODULE_PATH = 'config.formats'
-
-SHORT_DATETIME_FORMAT = DATETIME_FORMAT = '%Y-%m-%d %H:%M Z'
-DATE_FORMAT = SHORT_DATE_FORMAT = '%Y-%m-%d Z'
-TIME_FORMAT = '%H:%M Z'
 ```
-
-The settings-level strings serve two purposes: they are the fallback if the format module
-is not found, and they are used when code accesses the format values through
-`getattr(settings, 'DATETIME_FORMAT')` directly rather than through `get_format()`.
 
 ## How Django resolves formats
 
@@ -137,14 +129,14 @@ When code calls `formats.get_format('DATETIME_FORMAT')`, Django follows this pat
 1. If locale formatting is enabled, check each module returned by `get_format_modules()`
 2. Modules are searched in order: `FORMAT_MODULE_PATH` first, then built-in locale modules
 3. If a module defines the requested format, use that value
-4. Otherwise fall back to the value from `settings.py`
+4. Otherwise fall back to the value from `config/settings.py`
 
 With `FORMAT_MODULE_PATH = 'config.formats'`, our module is checked before
 `django.conf.locale.en.formats`, so our RFC 3339 format wins.
 
 ## What about USE_I18N?
 
-`USE_I18N` controls Django's translation machinery -- `gettext`, `{% raw %}{% translate %}{% endraw %}`,
+`USE_I18N` controls Django's translation machinery of `gettext`, `{% raw %}{% translate %}{% endraw %}`,
 language-prefixed URLs, and so on. It does not control date formatting. You can set
 `USE_I18N = True` (to translate strings) while still using RFC 3339 datetimes via
 `FORMAT_MODULE_PATH`. The two are independent.
