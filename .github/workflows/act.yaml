@@ -36,6 +36,8 @@ jobs:
             - run: mise pre-commit-all
             - run: mise build
             - run: mise deploy
+              env:
+                  TF_WORKSPACE: ${{ github.ref_name == 'main' && 'main' || format('pre{0}', github.event.pull_request.number) }}
     tabularize:
         runs-on: ubuntu-latest
         steps:
