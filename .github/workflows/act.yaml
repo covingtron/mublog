@@ -18,11 +18,11 @@ jobs:
     act:
         runs-on: ubuntu-latest
         environment:
-            name: ${{ github.ref_name }}
+            name: ${{ github.ref_name == 'main' && 'main' || format('pre{0}', github.event.pull_request.number) }}
             url: >-
                 ${{ github.ref_name == 'main'
                 && 'https://cov.ing/ton/'
-                || format('https://{0}.cov.ing/ton/', replace(github.ref_name, '/', '-')) }}  # dup mise.toml:24
+                || format('https://pre{0}.cov.ing/ton/', github.event.pull_request.number) }}
         steps:
             - uses: actions/checkout@v6
               with:
