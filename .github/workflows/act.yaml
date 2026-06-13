@@ -22,7 +22,7 @@ jobs:
             url: >-
                 ${{ github.ref_name == 'main'
                 && 'https://cov.ing/ton/'
-                || format('https://{0}.cov.ing/ton/', github.ref_name) }}
+                || format('https://{0}.cov.ing/ton/', replace(github.ref_name, '/', '-')) }}  # dup mise.toml:24
         steps:
             - uses: actions/checkout@v6
               with:
