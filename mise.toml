@@ -1,9 +1,6 @@
 [tasks.build]
 run = 'mkdocs build "$@"'
 
-[tasks.cookiecutter]
-run = 'echo skipped until github actions template includes secrets, build, and deploy'
-
 [tasks.preview]
 run = 'mkdocs serve "$@"'
 

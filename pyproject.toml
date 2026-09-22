@@ -1,36 +1,75 @@
 [project]
+description = ''
 name = 'mublog'
-dynamic = ['version']
+readme = 'README.md'
+requires-python = '>=3.12'
+version = '0'
+
+dependencies = [
+    
+    'cdktf',
+    
+    'cdktf-cdktf-provider-cloudflare',
+    
+    'helicopyter',
+    
+    'mkdocs-macros-plugin',
+    
+    'mkdocs-material',
+    
+]
 
 [project.optional-dependencies]
 dev = [
+    'playwright',
+    'setuptools',
+]
+pre-commit = [
     'actionlint-py',
-    'cdktf',
-    'cdktf-cdktf-provider-cloudflare',
+    'basedpyright',
     'cookiecutter',
     'django-upgrade',
-    'djlint',
+    'djlint>=1.45.0',
     'hadolint-py @ git+https://github.com/AleksaC/hadolint-py.git',
-    'helicopyter',
-    'mkdocs-material',
-    'mkdocs-macros-plugin',
-    'playwright',
-    'pre-commit',
     'pre-commit-hooks',
     'pyrefly',
-    'pytest',
-    'pytest-cov',
     'ruff',
     'shellcheck-py',
     'shfmt-py',
+    'styleforce',
     'typos',
     'validate-pyproject[all]',
     'yamllint',
 ]
+test = [
+    'pytest',
+    'pytest-cov',
+]
 
-[tool.pyrefly]
-python-version = '3.13'
+[project.urls]
+source = 'https://github.com/covingtron/mublog'
+
+[tool.pytest.ini_options]
+norecursedirs = ['.venv', 'node_modules', '{{cookiecutter.dot}}']
+
+[tool.basedpyright]
+extends = '.biobuddies/basedpyright.toml'
+
+[tool.djlint]
+close_void_tags = true
+format_attribute_template_tags = true
+indent = 4
+max_attribute_length = 100
+max_blank_lines = 1
+max_line_length = 100
+no_entity_formatting = true
+quote_style = 'single'
 
 [tool.ruff]
 extend = '.biobuddies/ruff.toml'
-line-length = 100
+
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]

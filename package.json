@@ -1,12 +1,10 @@
 {
-    "name": "mublog",
-    "version": "0",
-    "private": true,
+    "// prettier": ">=3.8.2; 3.8.1 crashes with `TypeError: Cannot read properties of undefined (reading 'findPair')`",
     "devDependencies": {
-        "prettier": "*",
-        "prettier-plugin-toml": "*",
+        "prettier": ">=3.8.2",
         "prettier-plugin-jinja-template": "*",
         "prettier-plugin-organize-attributes": "*",
+        "prettier-plugin-toml": "*",
         "wrangler": "*"
     }
 }

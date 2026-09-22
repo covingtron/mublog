@@ -12,6 +12,7 @@ default_context:
     python_optional_dependencies:
         dev:
             - playwright
+            - setuptools
     github_actions_env:
         AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
         AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
