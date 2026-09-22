@@ -1,7 +1,11 @@
-name: act
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event_name == 'push' && 'main' || github.ref }}
+    cancel-in-progress: ${{ github.event_name != 'push' }}
+
 defaults:
     run:
         shell: bash --noprofile --norc -o errexit -o nounset -o pipefail -o xtrace {0}
+
 env:
     AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
     AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
@@ -14,48 +18,103 @@ env:
     INSH_TF: tofu
     TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
+
+name: act
+
+permissions:
+    contents: read
+
 jobs:
-    act:
+    # Root jobs
+    check:
         runs-on: ubuntu-latest
-        environment:
-            name: ${{ github.ref_name }}
-            url: >-
-                ${{ github.ref_name == 'main'
-                && 'https://cov.ing/ton/'
-                || format('https://{0}.cov.ing/ton/', github.ref_name) }}
         steps:
-            - run: |
-                  if [[ "${GITHUB_REF_NAME}" == */* ]]; then
-                      printf 'Branch name "%s" contains a slash.\n' "${GITHUB_REF_NAME}"
-                      printf 'Supporting slashes in preview deployment configuration\n'
-                      printf 'is more effort than it is worth.\n'
-                      printf 'Use dashes instead (e.g., feature-my-thing).\n'
-                      exit 1
-                  fi
-            - uses: actions/checkout@v6
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
               with:
                   fetch-depth: 0
                   ref: ${{ github.head_ref || github.ref }}
-            - uses: jdx/mise-action@v3
+            - uses: jdx/mise-action@v4
               with:
                   experimental: true
-            - run: 'env -u GITHUB_TOKEN -u TENV_GITHUB_TOKEN tenv tofu install'
             - run: mise set-environment
             - run: mise pre-commit-all
-            - run: mise build
-            - run: mise deploy
     tabularize:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v6
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
               with:
                   fetch-depth: 0
                   ref: ${{ github.head_ref || github.ref }}
-            - uses: jdx/mise-action@v3
+            - uses: jdx/mise-action@v4
               with:
                   experimental: true
+                  install: false
             - run: mise tabularize
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            # Real hash is head_ref on pull_request, ref on push
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref || github.ref }}
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+            - run: |
+                  # shellcheck disable=SC2086
+                  mkdir -p $HOME/code
+                  # shellcheck disable=SC2086
+                  ln -s ../work/mublog/mublog $HOME/code/mublog
+
+            - run: mise test
+
+    # Leaf jobs
+    build-deploy:
+        needs: [check, test]
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        environment:
+            name: >-
+                ${{ github.event_name == 'release'
+                && 'prod'
+                || github.head_ref
+                || github.ref_name }}
+            # Synchronize with .config/mise.toml:50 tasks.fqdn.
+            url: >-
+                https://${{ (github.event_name == 'release'
+                || github.ref_name == 'main')
+                && 'cov.ing/ton/'
+                || format('{0}.cov.ing/ton/',
+                github.head_ref || github.ref_name) }}
+        steps:
+            - uses: actions/checkout@v7
+            - uses: jdx/mise-action@v4
+              with:
+                  experimental: true
+            - run: mise set-environment
+            - run: mise build
+            - run: >-
+                  mise deploy "${{ github.event_name == 'release'
+                  && 'prod'
+                  || github.head_ref
+                  || github.ref_name }}"
+            - if: github.event_name == 'release'
+              run: |
+                  expected=$(git ls-remote --refs origin refs/heads/prod | cut -f 1)
+                  git push "--force-with-lease=refs/heads/prod:$expected" origin HEAD:prod
 
 on: # yamllint disable-line rule:truthy
+    pull_request:
     push:
+        branches:
+            - main
+    release:
+        types:
+            - published
     workflow_dispatch:
+
+run-name: Acting on behalf of ${{ github.actor }}
