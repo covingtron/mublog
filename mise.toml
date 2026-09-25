@@ -29,7 +29,7 @@ set -o errexit -o nounset -o pipefail
 : "${TF_VAR_tabr:?TF_VAR_tabr must be set and non-empty}"
 if [[ "$TF_WORKSPACE" == "default" ]]; then
     echo 'The default workspace behaves inconsistently.'
-    echo 'If you only have one environment, please name it `prod`.'
+    echo 'If you only have one environment, please name it `main`.'
     exit 1
 fi
 rm -f site/ton/flan
