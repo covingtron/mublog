@@ -33,8 +33,8 @@ rm -f site/ton/flan
 mkdir -p site/ton/flan
 printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
     "$TF_WORKSPACE" "$TF_VAR_giha" "$TF_VAR_tabr" > site/ton/flan/index.html
-python -m helichopyter deploys/mublog/terraform.py
 tf=${INSH_TF:-terraform}
+python -m helicopyter mublog --format_with="$tf"
 env -u TF_WORKSPACE "$tf" -chdir=deploys/mublog/terraform init
 env -u TF_WORKSPACE "$tf" -chdir=deploys/mublog/terraform workspace new "$TF_WORKSPACE" || true
 TF_VAR_giha="$TF_VAR_giha" TF_VAR_tabr="$TF_VAR_tabr" \

@@ -7,11 +7,7 @@ version = '0'
 
 dependencies = [
     
-    'cdktf',
-    
-    'cdktf-cdktf-provider-cloudflare',
-    
-    'helicopyter',
+    'helicopyter>=2026.38.1',
     
     'mkdocs-macros-plugin',
     

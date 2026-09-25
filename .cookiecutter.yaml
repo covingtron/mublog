@@ -4,9 +4,7 @@ default_context:
     node_dev_dependencies:
         wrangler: '*'
     python_dependencies:
-        - cdktf
-        - cdktf-cdktf-provider-cloudflare
-        - helicopyter
+        - helicopyter>=2026.38.1
         - mkdocs-material
         - mkdocs-macros-plugin
     python_optional_dependencies:
