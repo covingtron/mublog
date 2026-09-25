@@ -1,7 +1,6 @@
 ---
 date: 2026-04-13
 slug: unicode-staff-grid
-draft: true
 ---
 
 # Unicode Staff Grid
