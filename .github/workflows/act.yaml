@@ -16,7 +16,6 @@ env:
     CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
     GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     INSH_TF: tofu
-    TENV_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
     TF_INPUT: 'false'
 

@@ -2,21 +2,6 @@
 
 lockfile_version = 1
 
-[[tools."aqua:tofuutils/tenv"]]
-version = "4.14.8"
-backend = "aqua:tofuutils/tenv"
-specifiers = ["latest"]
-
-[tools."aqua:tofuutils/tenv"."platforms.linux-x64"]
-checksum = "sha256:7a1774a9422d2713ee2991fff17e615077f340993a086d8ef2c590982950f6b8"
-url = "https://github.com/tofuutils/tenv/releases/download/v4.14.8/tenv_v4.14.8_Linux_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/tofuutils/tenv/releases/assets/444085464"
-
-[tools."aqua:tofuutils/tenv"."platforms.macos-arm64"]
-checksum = "sha256:d09590a063fbc2b83615667f935a34e42e3b61cfbd7b5d92415e80554fdd9fdf"
-url = "https://github.com/tofuutils/tenv/releases/download/v4.14.8/tenv_v4.14.8_Darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/tofuutils/tenv/releases/assets/444085460"
-
 [[tools.gh]]
 version = "2.101.0"
 backend = "aqua:cli/cli"
@@ -33,3 +18,18 @@ checksum = "sha256:e4303e39d8f07141c4bad4b99b01079f05029c59b27076e8fbc825c985ecd
 url = "https://github.com/cli/cli/releases/download/v2.101.0/gh_2.101.0_macOS_arm64.zip"
 url_api = "https://api.github.com/repos/cli/cli/releases/assets/565857200"
 provenance = "github-attestations"
+
+[[tools.opentofu]]
+version = "1.11.3"
+backend = "aqua:opentofu/opentofu"
+specifiers = ["1.11.3"]
+
+[tools.opentofu."platforms.linux-x64"]
+checksum = "sha256:46b567512d4cfa631551b936f3616c02277954fece29d91a52d264537399ad03"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.11.3/tofu_1.11.3_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/340048157"
+
+[tools.opentofu."platforms.macos-arm64"]
+checksum = "sha256:ed13cc2c919a0e3532eeb71fd5cd275d44d9552d8e57f18e5867917149146490"
+url = "https://github.com/opentofu/opentofu/releases/download/v1.11.3/tofu_1.11.3_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/opentofu/opentofu/releases/assets/340048138"
