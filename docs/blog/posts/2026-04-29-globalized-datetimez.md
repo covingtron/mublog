@@ -41,7 +41,7 @@ looking at the same date string:
 | Viewer | Offset | Their interpretation | UTC span |
 |---|---|---|---|
 | Reader in California (PDT) | UTC-7 | Apr 29, midnight to midnight Pacific | `2026-04-29T07:00Z` to `2026-04-30T06:59Z` |
-| Writer in India (IST) | UTC+5:30 | Apr 29, midnight to midnight IST | `2026-04-28T18:30Z` to `2026-04-29T18:29Z` |
+| Writer in India (IST) | UTC+5:30 | Apr 29, midnight to midnight IST | `2026-04-28T18:30Z` to `2026-04-29T18:29Z` | <!-- India Standard Time; # noqa: typos -->
 
 Their interpretations differ by 12 hours 30 minutes. In the worst case--a
 UTC-12 reader and a UTC+14 writer--the same date spans a 50-hour ambiguity

@@ -1,2 +1,24 @@
 default_context:
+    description: 'A minimal Publish on your Own Site, Syndicate Elsewhere (POSSE) blog'
+    domain_name: cov.ing/ton/
     languages: Node,Python,Terraform
+    node_dev_dependencies:
+        wrangler: '*'
+    python_dependencies:
+        - helicopyter>=2026.38.1
+        - mkdocs-material
+        - mkdocs-macros-plugin
+    python_optional_dependencies:
+        test:
+            - playwright
+    github_actions_env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_EMAIL: ${{ vars.CLOUDFLARE_EMAIL }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        GITHUB_TOKEN: ${{ github.token }}
+        INSH_TF: tofu
+        PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
