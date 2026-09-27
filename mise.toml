@@ -1,6 +1,10 @@
 [env]
 INSH_TF = 'tofu'
 
+[tools]
+'aqua:tofuutils/tenv' = 'latest'
+gh = 'latest'
+
 [tasks.build]
 run = 'mkdocs build "$@"'
 
