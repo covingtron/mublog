@@ -1,5 +1,5 @@
 [project]
-description = ''
+description = 'A minimal Publish on your Own Site, Syndicate Elsewhere (POSSE) blog'
 name = 'mublog'
 readme = 'README.md'
 requires-python = '>=3.12'
@@ -16,10 +16,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = [
-    'playwright',
-    'setuptools',
-]
 pre-commit = [
     'actionlint-py',
     'basedpyright',
@@ -38,6 +34,7 @@ pre-commit = [
     'yamllint',
 ]
 test = [
+    'playwright',
     'pytest',
     'pytest-cov',
 ]

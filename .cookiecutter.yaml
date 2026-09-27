@@ -1,4 +1,5 @@
 default_context:
+    description: 'A minimal Publish on your Own Site, Syndicate Elsewhere (POSSE) blog'
     domain_name: cov.ing/ton/
     languages: Node,Python,Terraform
     node_dev_dependencies:
@@ -8,9 +9,8 @@ default_context:
         - mkdocs-material
         - mkdocs-macros-plugin
     python_optional_dependencies:
-        dev:
+        test:
             - playwright
-            - setuptools
     github_actions_env:
         AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
         AWS_ENDPOINT_URL_S3: ${{ vars.AWS_ENDPOINT_URL_S3 }}
