@@ -5,7 +5,7 @@ from pathlib import Path
 
 from helichopyter import backend, provider, required_providers, resource
 
-required_providers(cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.14.0'})
+required_providers(cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.27.0-startup.1'})
 backend(
     's3',
     bucket='terraform',
