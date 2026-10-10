@@ -22,3 +22,4 @@ default_context:
         GITHUB_TOKEN: ${{ github.token }}
         INSH_TF: tofu
         PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
+        TF_CLI_ARGS_apply: -auto-approve
