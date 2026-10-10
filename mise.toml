@@ -13,6 +13,24 @@ envi=${1:?missing envi}
 mkdir -p site/ton/flan
 printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' "$envi" "$(mise giha)" "$(mise tabr)" \
     > site/ton/flan/index.html
+# Upstream to Measles if this downstream plan-comment trial proves useful.
+if [[ ${GITHUB_HEAD_REF:-} ]]; then
+    plan_comment=$(mktemp)
+    trap 'rm -f "$plan_comment"' EXIT
+    plan_status=0
+    printf '### OpenTofu plan against main\n\n```tf\n' > "$plan_comment"
+    plan_output=$(NO_COLOR=1 TF_CLI_ARGS=-no-color mise tplan main 2>&1) || plan_status=$?
+    # Keep only planned actions, or everything when OpenTofu never got that far
+    trimmed=$(awk '
+        !on && /^No changes|Error:/ { on = 1 }
+        on && !/^(─)+$/ && !/^Note: You didn.t use the -out option/ && !/^guarantee to take exactly/
+        !on && /following actions.*:$/ { on = 1 }
+    ' <<< "$plan_output")
+    printf '%s\n' "${trimmed:-$plan_output}" >> "$plan_comment"
+    printf '\n```\n' >> "$plan_comment"
+    gh pr comment "$GITHUB_HEAD_REF" --create-if-none --edit-last --body-file "$plan_comment"
+    [[ $plan_status -eq 0 ]] || exit "$plan_status"
+fi
 mise tapply "$@"
 '''
 

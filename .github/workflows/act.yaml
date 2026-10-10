@@ -76,6 +76,7 @@ jobs:
         needs: [check, test]
         permissions:
             contents: write
+            pull-requests: write
         runs-on: ubuntu-latest
         environment:
             name: ${{ github.head_ref || github.ref_name }}
