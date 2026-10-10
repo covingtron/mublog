@@ -28,7 +28,7 @@ for this style directly, and so does
 | [Common Log Format (CLF)](https://en.wikipedia.org/wiki/Common_Log_Format) | 1995 | No ❌ | None ❌ | ` ` space ✅ | 🤷 |
 | [YAML Ain't Markup Language (YAML)](https://en.wikipedia.org/wiki/YAML) | 2001 | Yes ✅ | `:` colon ✅ | `\n` newline plus indentation ❌ | No ✅ |
 | [JavaScript Object Notation (JSON)](https://en.wikipedia.org/wiki/JSON) | 2001 | Yes ✅ | `:` colon ✅ | `,` comma ✅ | Yes ❌ |
-| [Labeled Tab-Separated Values (LTSV)](https://en.wikipedia.org/wiki/Labeled_Tab-separated_Values) | 2012 | Yes ✅ | `:` colon ✅ | `\t` tab ✅ | No ✅ |
+| [Labeled Tab-Separated Values (LTSV)](http://ltsv.org/) | 2012 | Yes ✅ | `:` colon ✅ | `\t` tab ✅ | No ✅ |
 | [Tom's Obvious Markup Language (TOML)](https://en.wikipedia.org/wiki/TOML) | 2013 | Yes ✅ | `=` equals ✅ | `\n` newline ❌ | No ✅ |
 | [logfmt](https://brandur.org/logfmt) | 2013 | Yes ✅ | `=` equals ✅ | ` ` space ✅ | No ✅ |
 

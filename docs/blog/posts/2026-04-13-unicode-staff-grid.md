@@ -1,7 +1,6 @@
 ---
 date: 2026-04-13
 slug: unicode-staff-grid
-draft: true
 ---
 
 # Unicode Staff Grid
@@ -165,7 +164,7 @@ The relevant character is [<span class="noto-music">&#x1D11A;</span>](https://co
 }
 </style>
 
-<div class="staff-post">
+<div class="staff-post" markdown="1">
 
 The source file in [notofonts/music](https://github.com/notofonts/music) is
 [`sources/NotoMusic.glyphs`](https://github.com/notofonts/music/blob/main/sources/NotoMusic.glyphs).
