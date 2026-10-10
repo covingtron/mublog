@@ -8,6 +8,9 @@ opentofu = '1.11.3'
 [tasks.build]
 run = 'mkdocs build "$@"'
 
+[tasks.cookiecutter]
+run = 'python -m scripts.cookiecutter "$@"'
+
 [tasks.preview]
 run = 'mkdocs serve "$@"'
 
