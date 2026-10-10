@@ -48,8 +48,9 @@ The relevant character is [<span class="noto-music">&#x1D11A;</span>](https://co
   --notes-left: calc(var(--staff-left) + var(--prefix-width));
   --slot-step: calc((var(--staff-width) - var(--notes-left) - var(--half-font-size)) / 15);
   display: block;
+  height: calc(var(--staff-step) * 10.9 + 3rem);
   margin: 1rem 0;
-  padding: calc(var(--staff-step) * 0.5) 0 1.5rem;
+  padding: calc(var(--staff-step) * 0.5) 0 0;
   position: relative;
   width: calc(var(--staff-width) + var(--staff-left));
 }

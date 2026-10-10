@@ -8,6 +8,9 @@ opentofu = '1.11.3'
 [tasks.build]
 run = 'mkdocs build "$@"'
 
+[tasks.cookiecutter]
+run = 'python -m scripts.cookiecutter "$@"'
+
 [tasks.preview]
 run = 'mkdocs serve "$@"'
 
@@ -33,6 +36,19 @@ printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
 python -m helicopyter mublog --format_with="$INSH_TF"
 env -u TF_WORKSPACE "$INSH_TF" -chdir=deploys/mublog/terraform init
 env -u TF_WORKSPACE "$INSH_TF" -chdir=deploys/mublog/terraform workspace new "$TF_WORKSPACE" || true
+# Upstream to Measles if this downstream plan-comment trial proves useful.
+if [[ ${GITHUB_HEAD_REF:-} ]]; then
+    cona=${CONA:-mublog}
+    plan_comment=$(mktemp)
+    trap 'rm -f "$plan_comment"' EXIT
+    plan_status=0
+    printf '### OpenTofu plan against main\\n\\n```tf\\n' > "$plan_comment"
+    env -u TF_WORKSPACE NO_COLOR=1 mise tplan "$cona" main -no-color \
+        >> "$plan_comment" 2>&1 || plan_status=$?
+    printf '\\n```\\n' >> "$plan_comment"
+    gh pr comment "$GITHUB_HEAD_REF" --body-file "$plan_comment"
+    [[ $plan_status -eq 0 ]] || exit "$plan_status"
+fi
 TF_VAR_giha="$TF_VAR_giha" TF_VAR_tabr="$TF_VAR_tabr" \
     mise tapply mublog "$TF_WORKSPACE" -auto-approve
 """

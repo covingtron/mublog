@@ -10,6 +10,9 @@ uv_venv_auto = 'create|source'
 [env]
 INSH_TF = 'tofu'
 TENV_AUTO_INSTALL = 'true'
+# Claude Code on the web blocks api.github.com, such as latest-release queries, but not downloads
+TOFUENV_INSTALL_MODE = 'mirror'
+TOFUENV_LIST_MODE = 'mirror'
 _.path = ['./node_modules/.bin']
 _.python.venv = { path = '.venv' }
 
@@ -35,6 +38,14 @@ wait "$npm_pid"
 [ "$uv_status" -eq 0 ] || exit "$uv_status"
 mise generate pre-commit > .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
+mkdir -p ~/.local/share/gh/extensions
+ln -sfn "$(mise where github:github/gh-stack)" ~/.local/share/gh/extensions/gh-stack
+# Unlike a tool postinstall, which a restored mise cache skips
+mirror=~/.terraform.d/plugins/registry.opentofu.org/cloudflare/cloudflare/5.27.0-startup.1
+if directory=$(mise where github:biobuddies/helicopyter 2>/dev/null); then
+    mkdir -p "$mirror"
+    ln -sfn "$directory" "$mirror/linux_amd64"
+fi
 """
 
 # Prerequisite tasks
@@ -57,11 +68,8 @@ run = '''
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 tabr=$(mise tabr)
-case ${GITHUB_EVENT_NAME-}:$tabr in
-    release:*|*:main) echo 'cov.ing/ton/' ;;
-    :) ;;
-    *) echo "$tabr.cov.ing/ton/" ;;
-esac
+[[ $tabr ]] || exit 0
+python -m helicopyter fqdn 'cov.ing/ton/' "$tabr"
 '''
 
 [tasks.giha]
@@ -208,23 +216,76 @@ run = 'mise run-on-sources django-upgrade \*.py "$@"'
 run = 'mise tapply "$@"'
 
 [tasks.djlint-django]
-run = 'mise run-on-sources djlint \*.dj.html --quiet --reformat --profile=django "$@"'
+# Resolve long attribute and other potential formatting differences in favor of prettier
+run = '''
+mise run-on-sources djlint \*.dj.html --quiet --reformat --profile=django "$@" || test $? -eq 1
+mise run-on-sources prettier \*.dj.html --write "$@"
+mise run-on-sources djlint \*.dj.html --lint --quiet --profile=django "$@"
+'''
 
 [tasks.djlint-jinja-html]
-run = 'mise run-on-sources djlint \*.j2.html --quiet --reformat --profile=jinja "$@"'
+# Resolve long attribute and other potential formatting differences in favor of prettier
+run = '''
+mise run-on-sources djlint \*.j2.html --quiet --reformat --profile=jinja "$@" || test $? -eq 1
+mise run-on-sources prettier \*.j2.html --write "$@"
+mise run-on-sources djlint \*.j2.html --lint --quiet --profile=jinja "$@"
+'''
 
 [tasks.djlint-jinja-yaml]
 # djlint hopefully does some Jinja linting and autoformatting. This configuration avoids
 # mangling YAML.
 # Workflow templates use YAML-shaped Jinja indentation that djlint flattens.
+# Suppress return code 1 for reformatted to avoid aborting sibling tasks
 run = '''
 mise run-on-sources djlint \*.j2.yaml \
     --no-function-formatting --preserve-blank-lines --preserve-leading-space --quiet --reformat \
-    --profile=jinja "$@"
+    --profile=jinja "$@" || test $? -eq 1
 '''
 
 [tasks.end-of-file-fixer]
 run = 'mise run-on-sources end-of-file-fixer . "$@"'
+
+[tasks.gh-pr-edit]
+quiet = true
+# Usage: mise gh-pr-edit FIELD NUMBER LEASE < CONTENT, with LEASE from mise gh-pr-read
+# GitHub ignores If-Match on PATCH, so this lease leaves a sub-second race
+run = '''
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+field=${1:?missing title or body} number=${2:?missing number} lease=${3:?missing lease}
+path=repos/$(git remote get-url origin | sed -E 's,.*[:/]([^/]+/[^/]+)$,\1,; s,\.git$,,')/pulls/$number
+current=$(gh api "$path" --jq ".$field // \"\"")
+hash=$(printf '%s\n' "$current" | sha256sum | cut -c1-16)
+if [[ $hash != "$lease" ]]; then
+    printf 'Lease %s broken by concurrent edit to lease %s:\n%s\n' "$lease" "$hash" "$current" >&2
+    exit 1
+fi
+content=$(cat)
+if [[ ${CLAUDE_CODE_REMOTE-} == true ]]; then
+    # CCW's proxy appends a footer to gh api body edits; its GitHub MCP tool does not
+    IFS=/ read -r _ owner repo _ number <<<"$path"
+    echo 'Lease held; make this call:'
+    jq --null-input --arg content "$content" --arg field "$field" --arg owner "$owner" \
+        --arg repo "$repo" --argjson number "$number" \
+        '{tool: "mcp__github__update_pull_request", owner: $owner, repo: $repo,
+            pullNumber: $number, ($field): $content}'
+    exit 0
+fi
+gh api "$path" --jq .html_url --method PATCH -f "$field=$content"
+'''
+
+[tasks.gh-pr-read]
+quiet = true
+# Usage: mise gh-pr-read FIELD NUMBER; prints FIELD to stdout and its lease to stderr
+run = '''
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+field=${1:?missing title or body} number=${2:?missing number}
+path=repos/$(git remote get-url origin | sed -E 's,.*[:/]([^/]+/[^/]+)$,\1,; s,\.git$,,')/pulls/$number
+current=$(gh api "$path" --jq ".$field // \"\"")
+printf '%s\n' "$current"
+printf 'lease %s\n' "$(printf '%s\n' "$current" | sha256sum | cut -c1-16)" >&2
+'''
 
 [tasks.hadolint]
 run = 'mise run-on-sources hadolint "*Dockerfile*" "$@"'
@@ -275,11 +336,70 @@ printf '%s' "$paths"
 exit 1
 """
 
+[tasks.checkout]
+# Usage: mise checkout [[ORGN/]CONA[@TABR]...]
+# Clone arguments and .cookiecutter.yaml peer_checkouts
+# Ensure ~/code/$CONA works (../$CONA doesn't everywhere)
+run = '''
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+commands=$(python - "$(mise envi)" "$(git rev-parse --show-toplevel)" "$@" <<'EOD'
+from pathlib import Path
+from shlex import join, quote
+from sys import argv
+
+from yaml import safe_load
+
+envi, toplevel, *arguments = argv[1:]
+toplevel = Path(toplevel)
+code = Path.home() / 'code'
+organizations = {
+    'gitignore': 'github',
+    'helicopyter': 'biobuddies',
+    'measles': 'biobuddies',
+    'speedrun': 'biobuddies',
+    'terraform-provider-cloudflare': 'cloudflare',
+    'wriggle': 'biobuddies',
+}
+cookiecutter = toplevel / '.cookiecutter.yaml'
+required = (safe_load(cookiecutter.read_text()) if cookiecutter.exists() else {}).get(
+    'default_context', {}
+).get('peer_checkouts', [])
+print(join(['mkdir', '-p', str(code)]))
+paths = [toplevel]
+for peer in [*required, *arguments]:
+    repository, _, tabr = (peer if '@' in peer else f'{peer}@main').partition('@')
+    repository = repository if '/' in repository else f'{organizations[repository]}/{repository}'
+    paths.append(path := toplevel.parent / repository.split('/')[-1])
+    # Adopt actions/checkout's nested path rather than cloning a duplicate
+    nested = toplevel / path.name
+    if adopt := envi == 'github' and not path.exists() and (nested / '.git').exists():
+        print(join(['ln', '-s', str(nested), str(path)]))
+    print(
+        join(['git', '-C', str(path), 'fetch', 'origin', tabr])
+        if adopt or path.exists()
+        else join([
+            'git',
+            'clone',
+            f'--branch={tabr}',
+            '--filter=blob:none',
+            f'https://github.com/{repository}.git',
+            str(path),
+        ])
+    )
+for path in paths if toplevel.parent != code else []:
+    print(f'[[ -e {quote(str(code / path.name))} ]] || ' + join(['ln', '-s', str(path), str(code)]))
+EOD
+)
+eval "$commands"
+'''
+
 [tasks.prettier-write]
+# Prettier incorporated into djlint tasks to reconcile formatting differences
 # Skip Markdown to conserve vertical space.
 # The Jinja parser's HTML layout mangles Jinja JSON; djlint handles Jinja YAML.
 run = '''
-mise run-on-sources prettier "*.{css,html,j2.html,js,json,jsx,toml,ts,tsx,yaml} :!*.j2.json :!*.j2.yaml" \
+mise run-on-sources prettier "*.{css,html,js,json,jsx,toml,ts,tsx,yaml} :!*.dj.html :!*.j2.html :!*.j2.json :!*.j2.yaml" \
     --write "$@"
 '''
 
@@ -472,7 +592,15 @@ git diff --cached --quiet || echo Auto-staged modifications
 
 [tools]
 # latest gh from ~/.config/mise/config.toml
+'github:github/gh-stack' = { version = '0.2.0', bin = 'gh-stack' }
 lychee = '0.23.0'
 node = '24'
 # python from uv
 uv = '0.12.5'
+
+# biobuddies/helicopyter provider.yaml build for startup_time_ms; filesystem mirror, unpacked layout
+[tools.'github:biobuddies/helicopyter']
+asset_pattern = '*linux_amd64.zip'
+os = ['linux']
+version = '5.27.0-startup.1'
+version_prefix = 'terraform-provider-cloudflare-v'

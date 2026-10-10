@@ -7,7 +7,7 @@ version = '0'
 
 dependencies = [
     
-    'helicopyter>=2026.38.1',
+    'helicopyter',
     
     'mkdocs-macros-plugin',
     
@@ -55,7 +55,6 @@ indent = 4
 max_attribute_length = 100
 max_blank_lines = 1
 max_line_length = 100
-no_entity_formatting = true
 quote_style = 'single'
 
 [tool.ruff]

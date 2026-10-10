@@ -63,9 +63,13 @@ simplest:
         * Save or move files generated during the current session to `/tmp`
         * Move leftovers from concurrent or historical sessions to `untracked/`
         * Do not use `.claude/` for scratch files; edits there are often gated
-    - Generally include autoformatting, autogeneration, and cleanup from `mise pre-commit-all`
-      with contemporary features and fixes. Large changes may warrant a separate preparatory
-      commit and Pull Request.
+    - Review autogeneration, autoformatting, and linting from `mise pre-commit-all`:
+        * GitHub Actions will bubble up failures including diffs
+        * Fold reasonable updates into current work; large changes may warrant a separate
+          preparatory commit and Pull Request
+        * Respond proportionally to any nonsense from autoformatters, autogenerators, linters, and
+          type checkers such as by adding `default.extend-identifiers` entry for typos,
+          `directory/.gitignore`, or `# noqa: N123 terse reason`
     - If asked to clobber uncommitted changes, copy to /tmp/ first
     - Avoid train-of-thought and bisect-breaking commits
     - Be ready to read the (appropriately filtered) git log:
@@ -83,7 +87,7 @@ simplest:
       push. You are granted explicit, standing permission to use slashless branches and need not
       ask.
     - Expect concurrent edits to Pull Request title and description (top comment); always read
-      before revising
+      before revising, with `mise gh-pr-read` and `mise gh-pr-edit` holding a lease between
     - Use `git commit --all --amend --no-edit` and squash/fixup to iterate on commits: updating
       already-tracked files is usually right. Untrack files added accidentally or retained
       past their useful life.
@@ -94,7 +98,7 @@ simplest:
           suffices.
         * Standard section headers are `### Background and links`, `### Changes and testing`, and
           `### Followup and questions`. Use a header only when its section has at least three
-          bullets.
+          bullets. `###` H3 headers avoid the horizontal rule GitHub draws under H1 and H2.
         * Automated testing should cover most code changes. Name the one to three existing,
           expanded, or new tests that provide the most useful coverage. Report testing as:
             - `Existing automated test...`
@@ -112,22 +116,37 @@ simplest:
     - Given a stack of local commits
         * Fan each local commit out to its own remote branch
         * Base each Pull Request on the previous branch
-* Favorite tools:
+* Avoid accidentally including .venv, node_modules, full git history; filter appropriately when
+  intentionally searching them for source code and documentation
+
+## Tools
+
+### Start Work in a Repository
 ```sh
-curl
+mise install  # .venv, node_modules, and mise shims
+```
+
+### Change and Check
+```sh
 diffstat
 gh
+gh stack link  # CCW workaround: gh api repos/{owner}/{repo}/stacks -F 'pull_requests[]=1' ...
+git restore
+git switch
+mise gh-pr-edit body 1 LEASE < body.md  # or title; LEASE from gh-pr-read
+mise gh-pr-read title 1  # or body; stdout content, stderr lease
+mise pre-commit-all
+mise test
+```
+
+### Discover and Debug
+```sh
+curl
 git grep
 git log
 git ls-files
-git restore
-git switch
 host
-mise pre-commit-all
-mise test
-npm
+npm ls --depth=0
 tree
-uv
+uv pip list  # requirements.txt not uv.lock
 ```
-* Avoid accidentally including .venv, node_modules, full git history; filter appropriately when
-  intentionally searching them for source code and documentation
