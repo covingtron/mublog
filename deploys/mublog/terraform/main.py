@@ -6,7 +6,7 @@ from pathlib import Path
 from helicopyter import Block, only_main, provider, resource, terraform, tlocals
 
 terraform.required_providers(
-    cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.27.0-startup.1'}
+    cloudflare={'source': 'cloudflare/cloudflare', 'version': '5.27.0-startup.2'}
 )
 terraform.backend('s3')(
     bucket='terraform',
