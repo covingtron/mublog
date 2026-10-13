@@ -1,0 +1,2 @@
+# github.com answers 503 to GitHub Actions runners for blob pages
+^https://github\.com/[^/]+/[^/]+/blob/

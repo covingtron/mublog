@@ -17,6 +17,7 @@ env:
     GITHUB_TOKEN: ${{ github.token }}
     INSH_TF: tofu
     PATH: .venv/bin:/home/runner/.local/bin:/home/runner/.local/share/mise/shims:/usr/bin:/bin
+    TF_CLI_ARGS_apply: -auto-approve
     TENV_GITHUB_TOKEN: ${{ github.token }}
     TF_INPUT: 'false'
 
@@ -64,12 +65,7 @@ jobs:
             - uses: jdx/mise-action@v4
               with:
                   experimental: true
-            - run: |
-                  # shellcheck disable=SC2086
-                  mkdir -p $HOME/code
-                  # shellcheck disable=SC2086
-                  ln -s ../work/mublog/mublog $HOME/code/mublog
-
+            - run: mise checkout
             - run: mise test
 
     # Leaf jobs
@@ -79,15 +75,10 @@ jobs:
             contents: write
         runs-on: ubuntu-latest
         environment:
-            name: >-
-                ${{ github.event_name == 'release'
-                && 'prod'
-                || github.head_ref
-                || github.ref_name }}
+            name: ${{ github.head_ref || github.ref_name }}
             # Synchronize with .config/mise.toml:50 tasks.fqdn.
             url: >-
-                https://${{ (github.event_name == 'release'
-                || github.ref_name == 'main')
+                https://${{ github.ref_name == 'main'
                 && 'cov.ing/ton/'
                 || format('{0}.cov.ing/ton/',
                 github.head_ref || github.ref_name) }}
@@ -96,14 +87,11 @@ jobs:
             - uses: jdx/mise-action@v4
               with:
                   experimental: true
+            # TABR is the branch, so FQDN is the preview or production domain
             - run: mise set-environment
             - run: mise build
-            - run: >-
-                  mise deploy "${{ github.event_name == 'release'
-                  && 'prod'
-                  || github.head_ref
-                  || github.ref_name }}"
-            - if: github.event_name == 'release'
+            - run: mise deploy "${{ github.head_ref || github.ref_name }}"
+            - if: github.event_name == 'push'
               run: |
                   expected=$(git ls-remote --refs origin refs/heads/prod | cut -f 1)
                   git push "--force-with-lease=refs/heads/prod:$expected" origin HEAD:prod
@@ -113,9 +101,6 @@ on: # yamllint disable-line rule:truthy
     push:
         branches:
             - main
-    release:
-        types:
-            - published
     workflow_dispatch:
 
 run-name: Acting on behalf of ${{ github.actor }}

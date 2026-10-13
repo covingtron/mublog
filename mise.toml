@@ -1,6 +1,3 @@
-[env]
-INSH_TF = 'tofu'
-
 [tools]
 gh = 'latest'
 opentofu = '1.11.3'
@@ -8,31 +5,16 @@ opentofu = '1.11.3'
 [tasks.build]
 run = 'mkdocs build "$@"'
 
-[tasks.preview]
-run = 'mkdocs serve "$@"'
-
 [tasks.deploy]
-run = """
+run = '''
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
-: "${TF_WORKSPACE:=$(mise tabr)}"
-: "${TF_VAR_giha:=$(mise giha)}"
-: "${TF_VAR_tabr:=${TF_WORKSPACE}}"
-: "${TF_WORKSPACE:?TF_WORKSPACE must be set and non-empty}"
-: "${TF_VAR_giha:?TF_VAR_giha must be set and non-empty}"
-: "${TF_VAR_tabr:?TF_VAR_tabr must be set and non-empty}"
-if [[ "$TF_WORKSPACE" == "default" ]]; then
-    echo 'The default workspace behaves inconsistently.'
-    echo 'If you only have one environment, please name it `prod`.'
-    exit 1
-fi
-rm -f site/ton/flan
+envi=${1:?missing envi}
 mkdir -p site/ton/flan
-printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' \
-    "$TF_WORKSPACE" "$TF_VAR_giha" "$TF_VAR_tabr" > site/ton/flan/index.html
-python -m helicopyter mublog --format_with="$INSH_TF"
-env -u TF_WORKSPACE "$INSH_TF" -chdir=deploys/mublog/terraform init
-env -u TF_WORKSPACE "$INSH_TF" -chdir=deploys/mublog/terraform workspace new "$TF_WORKSPACE" || true
-TF_VAR_giha="$TF_VAR_giha" TF_VAR_tabr="$TF_VAR_tabr" \
-    mise tapply mublog "$TF_WORKSPACE" -auto-approve
-"""
+printf 'CONA=mublog\nENVI=%s\nGIHA=%s\nTABR=%s\n' "$envi" "$(mise giha)" "$(mise tabr)" \
+    > site/ton/flan/index.html
+mise tapply "$@"
+'''
+
+[tasks.preview]
+run = 'mkdocs serve "$@"'
