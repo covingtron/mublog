@@ -1,2 +1,5 @@
 # github.com answers 503 to GitHub Actions runners for blob pages
 ^https://github\.com/[^/]+/[^/]+/blob/
+# Claude Code sandbox proxy answers 403 for repositories outside the session
+^https://github\.com/josheppinette/python-logfmter$
+^https://github\.com/notofonts/music$
