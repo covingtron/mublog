@@ -12,11 +12,6 @@ checksum = "sha256:99691ed1d01b12a61e21a1979808cfa6102d0009026dac6bd4ee5007c14d0
 url = "https://github.com/biobuddies/helicopyter/releases/download/v2026.41.2/terraform-provider-cloudflare_5.27.0-startup.2_linux_amd64.zip"
 url_api = "https://api.github.com/repos/biobuddies/helicopyter/releases/assets/650368131"
 
-[tools."github:biobuddies/helicopyter"."platforms.macos-arm64"]
-checksum = "sha256:99691ed1d01b12a61e21a1979808cfa6102d0009026dac6bd4ee5007c14d0a55"
-url = "https://github.com/biobuddies/helicopyter/releases/download/v2026.41.2/terraform-provider-cloudflare_5.27.0-startup.2_linux_amd64.zip"
-url_api = "https://api.github.com/repos/biobuddies/helicopyter/releases/assets/650368131"
-
 [[tools."github:github/gh-stack"]]
 version = "0.2.0"
 backend = "github:github/gh-stack"
