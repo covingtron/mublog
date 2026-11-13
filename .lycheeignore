@@ -3,3 +3,5 @@
 # Claude Code sandbox proxy answers 403 for repositories outside the session
 ^https://github\.com/josheppinette/python-logfmter$
 ^https://github\.com/notofonts/music$
+# djlint.com connections fail from GitHub Actions and the agent proxy
+^https://djlint\.com/$

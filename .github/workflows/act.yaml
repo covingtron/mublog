@@ -1,6 +1,6 @@
 concurrency:
-    group: ${{ github.workflow }}-${{ github.event_name == 'push' && 'main' || github.ref }}
-    cancel-in-progress: ${{ github.event_name != 'push' }}
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 defaults:
     run:
@@ -101,7 +101,7 @@ jobs:
             - run: mise set-environment
             - run: mise build
             - run: mise deploy "${{ github.head_ref || github.ref_name }}"
-            - if: github.event_name == 'push'
+            - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               run: |
                   expected=$(git ls-remote --refs origin refs/heads/prod | cut -f 1)
                   git push "--force-with-lease=refs/heads/prod:$expected" origin HEAD:prod

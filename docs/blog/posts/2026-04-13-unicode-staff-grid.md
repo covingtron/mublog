@@ -10,7 +10,7 @@ also apply to musical staves.” This version does just that, but keeps one cons
 the Unicode staff glyph, measure the source units once, and derive the placement grid from those
 measurements instead of nudging pixels by hand.
 
-The relevant character is [<span class="noto-music">&#x1D11A;</span>](https://codepoints.net/U+1D11A),
+The relevant character is <span class="noto-music">&#x1D11A;</span>,
 `U+1D11A MUSICAL SYMBOL FIVE-LINE STAFF`.
 
 <style>
@@ -211,8 +211,8 @@ the `244` unit line-center spacing, so it lands on both lines and spaces.
 
 For the marks themselves, quarter notes and half notes are easier to read than bare noteheads. The
 overlay uses `Noto Music` glyphs for both from the same musical-symbol family:
-[𝅘𝅥](https://codepoints.net/U+1D15F), `U+1D15F MUSICAL SYMBOL QUARTER NOTE`, and
-[𝅗𝅥](https://codepoints.net/U+1D15E), `U+1D15E MUSICAL SYMBOL HALF NOTE`.
+𝅘𝅥, `U+1D15F MUSICAL SYMBOL QUARTER NOTE`, and
+𝅗𝅥, `U+1D15E MUSICAL SYMBOL HALF NOTE`.
 
 With that grid, a sparse `data-pos` overlay can treat one scaled staff glyph as one 16-slot
 measure block and place the treble clef, the stacked `4/4`, and then the note characters. Every

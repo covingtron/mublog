@@ -122,9 +122,9 @@ slug: fretboard-diagrams
 </style>
 
 Unicode includes an empty four-string fretboard,
-[<span class="noto-music">&#x1D11D;</span>](https://codepoints.net/U+1D11D), for ukulele or bass,
+<span class="noto-music">&#x1D11D;</span>, for ukulele or bass,
 and an empty six-string fretboard,
-[<span class="noto-music">&#x1D11C;</span>](https://codepoints.net/U+1D11C), for guitar.
+<span class="noto-music">&#x1D11C;</span>, for guitar.
 How are people supposed to compose the fretboard background and marks like ●, ◯, and ✕?
 
 Going all the way back to ASCII art and box drawings, one approach is multiple lines: one column
