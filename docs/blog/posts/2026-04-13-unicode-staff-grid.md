@@ -11,23 +11,13 @@ the Unicode staff glyph, measure the source units once, and derive the placement
 measurements instead of nudging pixels by hand.
 
 The relevant character is <span class="noto-music">&#x1D11A;</span>,
-`U+1D11A MUSICAL SYMBOL FIVE-LINE STAFF`.
+`'\U0001d11a'`, musical symbol five-line staff.
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Music&family=Source+Serif+4:wght@400;600&display=swap');
 
-.staff-post {
-  font-family: 'Source Serif 4', serif;
-  font-size: 1.08rem;
-  line-height: 1.7;
-}
-
 .noto-music {
   font-family: 'Noto Music', sans-serif;
-}
-
-.code-music {
-  font-family: 'Noto Music', monospace;
 }
 
 .staff-demo {
@@ -165,34 +155,189 @@ The relevant character is <span class="noto-music">&#x1D11A;</span>,
 }
 </style>
 
-<div class="staff-post" markdown="1">
-
 The source file in [notofonts/music](https://github.com/notofonts/music) is
 [`sources/NotoMusic.glyphs`](https://github.com/notofonts/music/blob/main/sources/NotoMusic.glyphs).
-A small Python script now builds one measurement table across the 4-string fretboard, 5-string
-fretboard, 5-line staff, stemless notehead, quarter note, and half note.
 
-Minimal Python to download the source and print the table:
+<details markdown="1">
+<summary>Python to download the font source, measure, and print the table:</summary>
 
 ```python
-from subprocess import check_output
+uv run --no-project --with fonttools python - <<'PY'
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
 
-path, _ = urlretrieve(
-    'https://raw.githubusercontent.com/notofonts/music/main/sources/NotoMusic.glyphs',
-    '/tmp/NotoMusic.glyphs',
-)
-print(check_output(['python', 'scripts/measure_noto_music.py', path], text=True))
+from fontTools.ttLib import TTFont
+
+
+@dataclass(frozen=True)
+class Bounds:
+    left: int
+    bottom: int
+    right: int
+    top: int
+
+    @property
+    def width(self) -> int:
+        return self.right - self.left
+
+    @property
+    def height(self) -> int:
+        return self.top - self.bottom
+
+    @property
+    def center_x(self) -> float:
+        return (self.left + self.right) / 2
+
+    @property
+    def center_y(self) -> float:
+        return (self.bottom + self.top) / 2
+
+
+def bound_points(points: list[tuple[int, int]]) -> Bounds:
+    horizontal, vertical = zip(*points)
+    return Bounds(min(horizontal), min(vertical), max(horizontal), max(vertical))
+
+
+def source_points(block: str) -> list[tuple[int, int]]:
+    return [(int(x), int(y)) for x, y in re.findall(r'\(([-\d]+),([-\d]+),[a-z]+\)', block)]
+
+
+def glyph_block(text: str, glyph_name: str) -> str:
+    start = text.rfind('{', 0, text.index(f'glyphname = {glyph_name};'))
+    depth = 0
+    for index in range(start, len(text)):
+        character = text[index]
+        if character == '{':
+            depth += 1
+        elif character == '}':
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    raise ValueError(f'Unclosed glyph block for {glyph_name}')
+
+
+def measure_source(text: str, glyph_name: str, staff: bool = False) -> dict[str, object]:
+    block = glyph_block(text, glyph_name)
+    details = ''
+    if staff:
+        lines = sorted(
+            (
+                bound_points(source_points(nodes))
+                for nodes in re.findall(r'nodes = \((.*?)\);', block, re.S)
+            ),
+            key=lambda bounds: bounds.bottom,
+        )
+        gap = lines[1].bottom - lines[0].top
+        center_step = lines[1].center_y - lines[0].center_y
+        details = (
+            f'{len(lines)} lines; thickness {lines[0].height}; gap {gap}; '
+            f'center step {center_step:.0f}; note step {center_step / 2:.0f}'
+        )
+    return {
+        'advance_width': int(re.search(r'width = (\d+);', block).group(1)),
+        'bounds': bound_points(source_points(block)),
+        'details': details,
+    }
+
+
+def measure_note(font: TTFont, glyph_name: str, notehead_top: int) -> dict[str, object]:
+    glyph = font['glyf'][glyph_name]
+    bounds = Bounds(glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax)
+    coordinates, _, flags = glyph.getCoordinates(font['glyf'])
+    notehead = bound_points([(x, y) for x, y in coordinates if y <= notehead_top])
+    stem_left = min(x for x, y in coordinates if y > notehead_top)
+    stem_right = max(x for x, y in coordinates if y > notehead_top)
+    stem_bottom = min(
+        y
+        for (x, y), flag in zip(coordinates, flags)
+        if flag & 1 and x in (stem_left, stem_right) and y < bounds.top
+    )
+    stem = bound_points([
+        (x, y) for x, y in coordinates if x >= stem_left and y >= notehead.center_y
+    ])
+    return {
+        'advance_width': font['hmtx'][glyph_name][0],
+        'bounds': bounds,
+        'details': (
+            f'notehead ({notehead.left}, {notehead.bottom})-'
+            f'({notehead.right}, {notehead.top}) '
+            f'center ({notehead.center_x:.1f}, {notehead.center_y:.1f}); '
+            f'stem ({stem.left}, {stem_bottom})-({stem.right}, {stem.top}); '
+            f'top offsets up/down {bounds.top - notehead.center_y:.1f}/'
+            f'{notehead.center_y - bounds.bottom:.1f}'
+        ),
+    }
+
+
+def measure_table(source: Path, font_path: Path) -> list[dict[str, object]]:
+    text = source.read_text()
+    notehead = '\U0001d158'
+    with TTFont(font_path) as font:
+        glyph_names = font.getBestCmap()
+        notehead_top = font['glyf'][glyph_names[ord(notehead)]].yMax
+        rows = []
+        for label, character, kind in (
+            ('4-string fretboard', '\U0001d11d', 'source'),
+            ('5-string fretboard', '\U0001d11e', 'source'),
+            ('5-line staff', '\U0001d11a', 'staff'),
+            ('Stemless notehead', notehead, 'source'),
+            ('Quarter note', '\U0001d15f', 'note'),
+            ('Half note', '\U0001d15e', 'note'),
+        ):
+            glyph_name = glyph_names[ord(character)]
+            measurement = (
+                measure_note(font, glyph_name, notehead_top)
+                if kind == 'note'
+                else measure_source(text, glyph_name, staff=kind == 'staff')
+            )
+            rows.append({'label': label, 'codepoint': ascii(character), **measurement})
+    return rows
+
+
+def markdown_table(rows: list[dict[str, object]]) -> str:
+    return '\n'.join([
+        '| Glyph | Codepoint | Advance | Bounds `(l,b)-(r,t)` | Size | Center | Details |',
+        '| --- | --- | ---: | --- | --- | --- | --- |',
+        *(
+            (
+                '| {label} | `{codepoint}` | {advance_width} | '
+                '({bounds.left}, {bounds.bottom})-({bounds.right}, {bounds.top}) | '
+                '{bounds.width}x{bounds.height} | '
+                '({bounds.center_x:.1f}, {bounds.center_y:.1f}) | {details} |'
+            ).format(**row)
+            for row in rows
+        ),
+    ])
+
+
+with TemporaryDirectory() as directory:
+    source = Path(directory) / 'NotoMusic.glyphs'
+    font = Path(directory) / 'NotoMusic.ttf'
+    urlretrieve(
+        'https://raw.githubusercontent.com/notofonts/music/main/sources/NotoMusic.glyphs', source
+    )
+    urlretrieve(
+        'https://raw.githubusercontent.com/notofonts/noto-fonts/main/'
+        'hinted/ttf/NotoMusic/NotoMusic-Regular.ttf',
+        font,
+    )
+    print(markdown_table(measure_table(source, font)))
+PY
 ```
+
+</details>
 
 The full table is longer, but for this post the staff, quarter-note, and half-note rows are the
 ones that matter:
 
-| Glyph | Codepoint | Glyph name | Advance | Bounds `(l,b)-(r,t)` | Size | Center | Details |
-| --- | --- | --- | ---: | --- | --- | --- | --- |
-| 5-line staff | U+1D11A | `u1D11A` | 1100 | (50, 0)-(1050, 1000) | 1000x1000 | (550.0, 500.0) | 5 lines; thickness 24; gap 220; center step 244; note step 122 |
-| Quarter note | U+1D15F | `u1D15F` | 400 | (51, 11)-(350, 1009) | 299x998 | (200.5, 510.0) | measured from built TTF glyph bounds |
-| Half note | U+1D15E | `u1D15E` | 397 | (50, -1)-(347, 1009) | 297x1010 | (198.5, 504.0) | measured from built TTF glyph bounds |
+| Glyph | Codepoint | Advance | Bounds `(l,b)-(r,t)` | Size | Center | Details |
+| --- | --- | ---: | --- | --- | --- | --- |
+| 5-line staff | `'\U0001d11a'` | 1100 | (50, 0)-(1050, 1000) | 1000x1000 | (550.0, 500.0) | 5 lines; thickness 24; gap 220; center step 244; note step 122 |
+| Quarter note | `'\U0001d15f'` | 400 | (51, 11)-(350, 1009) | 299x998 | (200.5, 510.0) | measured from built TTF glyph bounds |
+| Half note | `'\U0001d15e'` | 397 | (50, -1)-(347, 1009) | 297x1010 | (198.5, 504.0) | measured from built TTF glyph bounds |
 
 The useful CSS variables fall straight out of those measurements:
 
@@ -211,8 +356,8 @@ the `244` unit line-center spacing, so it lands on both lines and spaces.
 
 For the marks themselves, quarter notes and half notes are easier to read than bare noteheads. The
 overlay uses `Noto Music` glyphs for both from the same musical-symbol family:
-𝅘𝅥, `U+1D15F MUSICAL SYMBOL QUARTER NOTE`, and
-𝅗𝅥, `U+1D15E MUSICAL SYMBOL HALF NOTE`.
+<span class="noto-music">𝅘𝅥</span>, `'\U0001d15f'`, musical symbol quarter note, and
+<span class="noto-music">𝅗𝅥</span>, `'\U0001d15e'`, musical symbol half note.
 
 With that grid, a sparse `data-pos` overlay can treat one scaled staff glyph as one 16-slot
 measure block and place the treble clef, the stacked `4/4`, and then the note characters. Every
@@ -244,13 +389,13 @@ measure starts a new staff block when the 16 slots run out.
 ```html
 <div class="staff-demo">
   <div class="staff-items">
-    <span data-pos="G01">𝄞</span>
+    <span data-pos="G01">&#x1d11e;</span>
     <span data-pos="a03">4</span>
     <span data-pos="c03">4</span>
-    <span data-pos="g04"><span class="code-music">𝅘𝅥</span></span>
-    <span data-pos="g08"><span class="code-music">𝅘𝅥</span></span>
-    <span data-pos="d12"><span class="code-music">𝅘𝅥</span></span>
-    <span data-pos="d16"><span class="code-music">𝅘𝅥</span></span>
+    <span data-pos="g04">&#x1d15f;</span>
+    <span data-pos="g08">&#x1d15f;</span>
+    <span data-pos="d12">&#x1d15f;</span>
+    <span data-pos="d16">&#x1d15f;</span>
   </div>
 </div>
 ```
@@ -258,5 +403,3 @@ measure starts a new staff block when the 16 slots run out.
 This is the part I wanted from the start: one Unicode background glyph, one measured grid, and
 then ordinary markup on top. The fretboard glyph and the staff glyph both work better once the
 source units become the API.
-
-</div>
