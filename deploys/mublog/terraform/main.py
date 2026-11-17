@@ -37,14 +37,21 @@ resource.cloudflare_workers_script.this(
     },
 )
 
+# The apex already holds the proxied libre R2 bucket CNAME, which blocks an AAAA; cov.ing/* routes
+# to the Worker either way
 resource.cloudflare_dns_record.this(
     content='100::',
-    name=Block('terraform.workspace == "main" ? "@" : terraform.workspace'),
+    count=Block('terraform.workspace == "main" ? 0 : 1'),
+    name=Block('terraform.workspace'),
     proxied=True,
     ttl=1,
     type='AAAA',
     zone_id=environ['CLOUDFLARE_ZONE_ID'],
 )
+Block('moved')(**{
+    'from': Block('cloudflare_dns_record.this'),
+    'to': Block('cloudflare_dns_record.this[0]'),
+})
 
 resource.cloudflare_workers_route.api(
     depends_on=[resource.cloudflare_workers_script.this],
